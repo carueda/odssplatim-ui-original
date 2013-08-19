@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>ODSS Platform Timeline Editor -- prototype</title>
+
+    <link rel="stylesheet" href="jquery/ui/themes/smoothness/jquery-ui.css" />
+
+    <script src='jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
+
+    <script src="jquery/ui/jquery-ui.js"></script>
+
+    <script src="jquery-ui-timepicker-addon.js"></script>
+    <link rel='stylesheet' type='text/css' href='jquery-ui-timepicker-addon.css'>
+
+    <script src="moment.js"></script>
+    <script src="links/timeline.js"></script>
+
+    <script src='config.js' charset="utf-8"></script>
+    <script src='common.js' charset="utf-8"></script>
+    <script src='tokenform.js' charset="utf-8"></script>
+    <script src='periodform.js' charset="utf-8"></script>
+    <script src='platformform.js' charset="utf-8"></script>
+    <script src='assert.js' charset="utf-8"></script>
+    <script src='timelinewidget.js' charset="utf-8"></script>
+    <script src='app5.js' charset="utf-8"></script>
+
+    <link rel='stylesheet' type='text/css' href='links/timeline.css'>
+    <link rel='stylesheet' type='text/css' href='app5.css'>
+
+    <style type="text/css">
+        body {
+        font-size: 8pt;
+        font-family: verdana, sans, arial, sans-serif;
+        }
+
+
+    input.text {
+        margin-bottom:12px;  padding: .4em; font-size: 10px;
+    	/*width: 160px;*/
+    }
+
+    fieldset { padding:0; border:0; margin-top:10px; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+
+
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>Platform Timeline</h2>
+
+<div style="text-align:left">
+    <button class="graybutton" id="refresh" title="Reloads the timeline">Refresh</button>
+    <button class="graybutton" id="save" title="Saves all new and modified tokens">Save</button>
+    <button class="graybutton" id="showPlatformForm" title="Platform options">Platform</button>
+    <button class="graybutton" id="selectPeriod"
+            title="Allows to visualize a pre-defined period or create a new period">Period
+    </button>
+    <button class="graybutton" id="diagnostics">diagnostics</button>
+</div>
+
+
+<div id="timelines"></div>
+
+
+<div id="status" style="background-color: lightyellow;
+position:absolute; left:10px; top:10px;">
+</div>
+
+<div id="error" style="background-color: lightcoral">
+</div>
+
+
+<!-- --------------------------------------------------------- !-->
+<div id="token-form" title="Token">
+    <form>
+        <fieldset>
+            <table>
+                <tbody>
+                <tr>
+
+                    <td colspan="3">
+                        <div style="text-align: center">
+                            <label for="token-state">State:</label>
+                            <input type="text" name="token-state" id="token-state"
+                                   class="text ui-widget-content ui-corner-all"/>
+                            <label for="token-on_timeline">on timeline for platform:</label>
+                            <input id="token-on_timeline" class="text ui-widget-content ui-corner-all" readonly/>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <table class="token-form">
+                            <tbody>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div style="text-align: center; font-weight: bold"> Start date</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="token-start">Date:</label></td>
+                                <td><input type="text" name="token-start" id="token-start"
+                                           class="text ui-widget-content ui-corner-all"
+                                        /></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </td>
+
+                    <td>
+
+                        <table class="token-form">
+                            <tbody>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div style="text-align: center; font-weight: bold">End date</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="token-end">Date:</label></td>
+                                <td><input type="text" name="token-end" id="token-end"
+                                           class="text ui-widget-content ui-corner-all"
+                                        /></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+        </fieldset>
+    </form>
+</div>
+
+<!-- --------------------------------------------------------- !-->
+<div id="platform-form" title="Platform">
+    <form>
+        <fieldset>
+            <table>
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox" id="showAllPlatforms"/>
+                        <label for="showAllPlatforms">Show all platforms in timeline</label>
+                    </td>
+
+                </tr>
+
+                <tr id="newPlaformSection">
+                    <td colspan="2">
+                        <div>
+                            <br/><br/>
+                            <hr/>
+                            To create a new platform or remove an existing platform from
+                            the database, enter its ID and click Add or Delete.
+                        </div>
+                        <br/>
+                        <label for="platformField">Platform ID:</label>
+                        <input id="platformField" size="50"/>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+        </fieldset>
+    </form>
+</div>
+
+
+<!-- --------------------------------------------------------- !-->
+<div id="period-form" title="Period">
+    <form>
+        <fieldset>
+            <table>
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        Select period to visualize or create a new period:
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <select id="periodSelection"></select>
+                    </td>
+
+                </tr>
+
+                <tr id="newPeriodSection">
+                    <td colspan="2">
+                        <label for="newPeriodField">Name:</label>
+                        <input id="newPeriodField" size="50"/>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <table class="token-form">
+                            <tbody>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div style="text-align: center; font-weight: bold"> Start date</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><input type="text" name="period-start" id="period-start"
+                                           class="text ui-widget-content ui-corner-all"
+                                        /></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </td>
+
+                    <td>
+
+                        <table class="token-form">
+                            <tbody>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div style="text-align: center; font-weight: bold">End date</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><input type="text" name="period-end" id="period-end"
+                                           class="text ui-widget-content ui-corner-all"
+                                        /></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+        </fieldset>
+    </form>
+</div>
+
+
+</body>
+</html>
