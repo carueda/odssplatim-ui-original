@@ -74,8 +74,9 @@ $(document).ready(function() {
         timelineWidget.redraw();
     }
     function refreshPeriods() {
+        console.log("Calling url = " + odssplatimConfig.rest + "/periods");
         $.ajax({
-            url:       "periods",
+            url:       odssplatimConfig.rest + "/periods",
             type:      "GET",
             dataType:  "json",
             data:      {},
@@ -110,7 +111,7 @@ $(document).ready(function() {
 
     function refreshTimelines(req) {
         $.ajax({
-            url:       "timelines",
+            url:       odssplatimConfig.rest + "/timelines",
             type:      "GET",
             dataType:  "json",
             data:       req,
@@ -174,7 +175,7 @@ $(document).ready(function() {
 //        console.log("getting tokens for " + platform_id);
         pprogress("getting tokens for " + platform_id);
         $.ajax({
-            url:       "timelines/" + platform_id,
+            url:       odssplatimConfig.rest + "/timelines/" + platform_id,
             type:      "GET",
             dataType:  "json",
             data:      {},
@@ -258,20 +259,20 @@ $(document).ready(function() {
         console.log("saveToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
         var item = {
-            oid:      tokenInfo.oid,
+            id:      tokenInfo.id,
             platform_id: strip(tokenInfo.platform_id),
             start:    unparseDate(tokenInfo.start),
             end:      unparseDate(tokenInfo.end),
             state:    tokenInfo.state
         };
 
-        if (item.oid !== undefined) {
+        if (item.id !== undefined) {
             // update existing token:
             console.log("saveToken: updating token " + JSON.stringify(item));
             pprogress("saving update to token ...");
 
             $.ajax({
-                url:       "tokens/" + item.oid,
+                url:       odssplatimConfig.rest + "/tokens",
                 type:      "PUT",
                 dataType:  "json",
                 data:       item,
@@ -297,7 +298,7 @@ $(document).ready(function() {
             pprogress("saving new token ...");
 
             $.ajax({
-                url:         "tokens",
+                url:         odssplatimConfig.rest + "/tokens",
                 type:        "POST",
                 dataType:    "json",
                 contentType: "application/json",
@@ -306,7 +307,7 @@ $(document).ready(function() {
                 success: function(data) {
                     success();
                     console.log("POST token response " + JSON.stringify(data));
-                    tokenInfo.oid = data.oid;
+                    tokenInfo.id = data.id;
                     timelineWidget.updateStatus(index, tokenInfo, "status_saved");
                     console.log("token posted " + JSON.stringify(tokenInfo));
                 },
@@ -333,18 +334,18 @@ $(document).ready(function() {
             function() {
                 // removal confirmed.
 
-                if (tokenInfo.oid === undefined) {
+                if (tokenInfo.id === undefined) {
                     // just remove block from timeline:
                     timelineWidget.removeToken(tokenInfo, index, row);
                     return;
                 }
 
                 // token exists in the db.
-                console.log("deleteToken: oid = " + tokenInfo.oid);
+                console.log("deleteToken: id = " + tokenInfo.id);
                 pprogress("deleting token ...");
 
                 $.ajax({
-                    url:       "tokens/" + tokenInfo.oid,
+                    url:       odssplatimConfig.rest + "/tokens/" + tokenInfo.id,
                     type:      "DELETE",
                     dataType:  "json",
 
@@ -368,7 +369,7 @@ $(document).ready(function() {
     function getAllPlatforms() {
         pstatus("Retrieving platforms...");
         $.ajax({
-            url:       "platforms",
+            url:       odssplatimConfig.rest + "/platforms",
             type:      "GET",
             dataType:  "json",
 
@@ -403,7 +404,7 @@ $(document).ready(function() {
 function TokenInfo(obj) {
     var self = this;
     var defaults = {
-        'oid'           : undefined,
+        'id'           : undefined,
         'platform_id'   : undefined,
         'start'         : undefined,
         'end'           : undefined,
