@@ -1,19 +1,20 @@
 $(document).ready(function() {
-
+    var self = this;
+    //window.app = self;  // to facilitate debugging in browser
     var tt = {};
     tt.startDate = undefined;
     tt.endDate = undefined;
 
     var periods = {};
 
-    function getPeriods() { return periods; }
+    self.getPeriods = function() { return periods; };
 
-    var tokenForm  = new TokenForm(deleteToken);
+    var tokenForm    = new TokenForm(self);
+    var periodForm   = new PeriodForm(self);
+    var platformForm = new PlatformForm(self);
 
-    var timelineWidget = new TimelineWidget($("#timelines")[0], tokenForm);
-
-    var periodForm = new PeriodForm(getPeriods, timelineWidget);
-    var platformForm = new PlatformForm(getAllPlatforms, refresh, timelineWidget);
+    self.timelineWidget = new TimelineWidget($("#timelines")[0], tokenForm);
+    var timelineWidget = self.timelineWidget;
 
 
     $("#selectPeriod").click(function() {
@@ -25,16 +26,16 @@ $(document).ready(function() {
     });
 
     $("#refresh").click(function() {
-        refresh();
+        self.refresh();
     });
 
-    refresh();
-
-    function refresh() {
+    self.refresh = function() {
         console.log("refreshing...");
         pprogress("refreshing...");
         refreshPeriods();
-    }
+    };
+
+    self.refresh();
 
     function refreshPeriods() {
         console.log("Calling url = " + odssplatimConfig.rest + "/periods");
@@ -245,7 +246,7 @@ $(document).ready(function() {
                     console.log("PUT token response " + JSON.stringify(res));
                     timelineWidget.updateStatus(index, tokenInfo, "status_saved");
                     console.log("token updated " + JSON.stringify(tokenInfo));
-                    //refresh();
+                    //self.refresh();
                 },
 
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -264,8 +265,7 @@ $(document).ready(function() {
                 url:         odssplatimConfig.rest + "/tokens",
                 type:        "POST",
                 dataType:    "json",
-                contentType: "application/json",
-                data:        JSON.stringify(item),
+                data:        item,
 
                 success: function(data) {
                     success();
@@ -283,7 +283,7 @@ $(document).ready(function() {
         }
     }
 
-    function deleteToken(tokenInfo, index, row) {
+    self.deleteToken = function(tokenInfo, index, row) {
 
         console.log("deleteToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
@@ -326,10 +326,10 @@ $(document).ready(function() {
                 });
             }
         );
-    }
+    };
 
 
-    function getAllPlatforms() {
+    self.getAllPlatforms = function() {
         pstatus("Retrieving platforms...");
         $.ajax({
             url:       odssplatimConfig.rest + "/platforms",
@@ -346,7 +346,7 @@ $(document).ready(function() {
                 perror("error: " + thrownError);
             }
         });
-    }
+    };
 
     function gotPlatforms(res) {
         console.log("gotPlatforms: " + JSON.stringify(res));

@@ -1,5 +1,5 @@
 
-function PlatformForm(getAllPlatforms, refresh, timelineWidget) {
+function PlatformForm(app) {
 
     var self = this;
 
@@ -17,10 +17,11 @@ function PlatformForm(getAllPlatforms, refresh, timelineWidget) {
         var v = $showAllPlatforms.is(":checked");
         console.log("$showAllPlatforms.val() = " + JSON.stringify(v));
         if (v) {
-            getAllPlatforms();
+            app.getAllPlatforms();
         }
         else {
             // TODO
+            app.refresh();
         }
         $form.dialog("close");
     });
@@ -62,8 +63,8 @@ function PlatformForm(getAllPlatforms, refresh, timelineWidget) {
                 $platformField.val("");
                 console.log("POST platform response " + JSON.stringify(res));
 
-                timelineWidget.addGroup({platform_id: platform_id});
-                timelineWidget.redraw();
+                app.timelineWidget.addGroup({platform_id: platform_id});
+                app.timelineWidget.redraw();
                 $form.dialog("close");
                 pstatus("new platform '" +platform_id+ "' added");
             },
@@ -116,7 +117,7 @@ function PlatformForm(getAllPlatforms, refresh, timelineWidget) {
                         var ok = function() {
                             $form.dialog("close");
                             pstatus("platform '" +platform_id+ "' deleted");
-                            refresh();
+                            app.refresh();
                         };
                         messageDialog(response, {title: "Server response", onOK: ok});
                     },

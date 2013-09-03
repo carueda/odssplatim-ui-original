@@ -1,5 +1,5 @@
 
-function PeriodForm(getPeriods, timelineWidget) {
+function PeriodForm(app) {
 
     var self = this;
 
@@ -25,7 +25,7 @@ function PeriodForm(getPeriods, timelineWidget) {
         $newPeriodSection.hide();
         $start.val("");
         $end  .val("");
-        timelineWidget.setVisibleChartRange();
+        app.timelineWidget.setVisibleChartRange();
     }
 
     var applyPeriodSelection = function() {
@@ -38,7 +38,7 @@ function PeriodForm(getPeriods, timelineWidget) {
             $newPeriodField.focus();
 
             // initialize with current visible range for mising field:
-            var dr = timelineWidget.getVisibleChartRange();
+            var dr = app.timelineWidget.getVisibleChartRange();
             console.log("curr vis range: " +JSON.stringify(dr));
             if ($start.val().trim() === "") {
                 $start.val(moment(dr.start).format("YYYY-MM-DD"));
@@ -52,7 +52,7 @@ function PeriodForm(getPeriods, timelineWidget) {
             var per = periodsById[id];
             $start.val(per.start);
             $end  .val(per.end);
-            timelineWidget.setVisibleChartRange(per.start, per.end);
+            app.timelineWidget.setVisibleChartRange(per.start, per.end);
         }
     };
     $periodSelection.change(  applyPeriodSelection);
@@ -135,7 +135,7 @@ function PeriodForm(getPeriods, timelineWidget) {
             success: function(res) {
                 success();
                 console.log(type + " period response " + JSON.stringify(res));
-                timelineWidget.setVisibleChartRange(start, end);
+                app.timelineWidget.setVisibleChartRange(start, end);
                 if (type === "POST") {
                     // insert new element using returned id
                     // and select it in the dropdown list:
@@ -210,7 +210,7 @@ function PeriodForm(getPeriods, timelineWidget) {
 
         $newPeriodSection.hide();
 
-        var periods = getPeriods();
+        var periods = app.getPeriods();
         for (var s = 0; s < periods.length; s++) {
             periodsById[periods[s].id] = {
                 'name':   periods[s].name,

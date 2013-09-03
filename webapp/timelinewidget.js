@@ -27,10 +27,22 @@ function TimelineWidget(container, tokenForm) {
         'axisOnTop':        true,
         'groupsChangeable': false,
         'showCustomTime':   false
-        //'groupsOnRight':    true,
-        //'showNavigation':   true,
-        //'showButtonNew':    true,
-//        'cluster':          true,
+
+//        // the following disables automatic scaling
+//        ,'scale':            links.Timeline.StepDate.SCALE.WEEKDAY
+//        ,'step':             1
+
+
+        ,"min": new Date(2012, 0, 1)                // lower limit of visible range
+        ,"max": new Date(2015, 11, 31)              // upper limit of visible range
+//        ,"zoomMin": 1000 * 60 * 60 * 24             // one day in milliseconds
+//        ,"zoomMax": 1000 * 60 * 60 * 24 * 31 * 3     // about three months in milliseconds
+
+
+//        ,'cluster':          true
+//        ,'groupsOnRight':    true
+//        ,'showNavigation':   true
+//        ,'showButtonNew':    true
     };
 
     if (options.showCustomTime) {

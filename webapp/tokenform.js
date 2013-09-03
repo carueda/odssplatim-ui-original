@@ -1,5 +1,5 @@
 
-function TokenForm(deleteToken) {
+function TokenForm(app) {
 
     var self = this;
 
@@ -64,7 +64,7 @@ function TokenForm(deleteToken) {
 
     function _deleteToken() {
         console.log("_deleteToken index=" +index+ " row=" +row);
-        deleteToken(tokenInfo, index, row);
+        app.deleteToken(tokenInfo, index, row);
         form.dialog("close");
     }
 
