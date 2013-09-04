@@ -99,13 +99,13 @@ function TokenForm(app) {
 
         state.prop("disabled", readOnly);
 
-        $('#on_timeline').prop("readonly", true); // always readonly
+        on_timeline.prop("readonly", true); // always readonly
 
         start.datetimepicker("option", "disabled", readOnly);
         end  .datetimepicker("option", "disabled", readOnly);
 
         state.val(tokenInfo.state);
-        on_timeline.val(strip(tokenInfo.platform));
+        on_timeline.val(strip(tokenInfo.platform_id));
 
         start.val(unparseDate(tokenInfo.start));
         end  .val(unparseDate(tokenInfo.end));

@@ -4,15 +4,12 @@ function TimelineWidget(container, tokenForm) {
 
     self.tokenForm = tokenForm;
 
-    var data = [];
-    self.tokenInfos = [];
-    var tokenInfos = self.tokenInfos;
+    self.data = [];
+    var data = self.data;
 
     self.groups = {};
     var groups = self.groups;
     var nextPlatformId = 0;
-
-    var oldSelectedIndex = -1;
 
     var options = {
         'width':            '99%',
@@ -83,8 +80,6 @@ function TimelineWidget(container, tokenForm) {
     this.reinit = function() {
         self.timeline.deleteAllItems();
         data.lenght = 0;
-        tokenInfos.length = 0;
-        oldSelectedIndex = -1;
     };
 
 
@@ -114,34 +109,23 @@ function TimelineWidget(container, tokenForm) {
         }
     };
 
-    this.addGroup = function(tml) {
+    this.addGroup = function(platform_id) {
 
-        if (tml.platform_id in groups) {
-            console.log("addGroup: already added: " + JSON.stringify(tml));
+        if (platform_id in groups) {
+            console.log("addGroup: already added: " + platform_id);
             return;
         }
 
-        //console.log("addGroup: adding " + JSON.stringify(tml));
+        var domId = "plat_" + nextPlatformId++;
 
-        //!var id = tml.platform_id in groups ? groups[tml.platform_id].id : "plat_" + nextPlatformId++;
-
-        var id = "plat_" + nextPlatformId++;
-
-        groups[tml.platform_id] = {
-            'tml': tml,
-            'id' : id
+        groups[platform_id] = {
+            'domId' : domId
         };
 
-        var dummyTokenInfo = {
-            'group'       : tml.platform_id
-        };
-        //console.log("adding dummyTokenInfo " + JSON.stringify(dummyTokenInfo));
-        var index = tokenInfos.length;
-        tokenInfos.push(dummyTokenInfo);
-        pushBlockDummy(dummyTokenInfo);
+        pushBlockDummy(platform_id);
 
-        $(document).on("click", "#" +id, function() {
-            platformClicked(tml.platform_id);
+        $(document).on("click", "#" +domId, function() {
+            platformClicked(platform_id);
         });
     };
 
@@ -149,14 +133,26 @@ function TimelineWidget(container, tokenForm) {
         console.log("platformClicked= '" + platform_id + "'");
     }
 
-    this.addToken = function(tokenInfo) {
+    this.addToken = function(token) {
 
-        console.log("addToken: " + JSON.stringify(tokenInfo));
+        console.log("addToken: " + JSON.stringify(token));
 
-        var index = tokenInfos.length;
-        tokenInfos.push(tokenInfo);
-        pushBlock(tokenInfo, index);
-        prepareHover();
+        var body = {
+            'start':          parseDate(token.start),
+            'end':            parseDate(token.end),
+            'content':        token.state,
+            'group':          formattedGroup(token.platform_id),
+            'className':      token.status + " " + "block-body",
+
+            'token_id':       token.id,
+            'platform_id':    token.platform_id,
+            'state':          token.state,
+            'status':         token.status
+        };
+
+        console.log("!! addToken= " + JSON.stringify(body));
+
+        data.push(body);
     };
 
     this.redraw = function() {
@@ -165,54 +161,20 @@ function TimelineWidget(container, tokenForm) {
 
 
     function addAddListener() {
-        /*
-         * Gets info from the timeline generated element to create a new
-         * TokenInfo entry; the addition here is actually cancelled and a
-         * timed function is used to do the addition of the blocks
-         * associated to the new token.
-         */
         var onAdd = function(event) {
             var row = getSelectedRow();
             var element = data[row];
-            console.log("onAdd: row=" +row+ " element=" +JSON.stringify(element));
 
-            var platform_id = strip(element.group);
+            console.log("ADD: row=" +row+ " element=" +JSON.stringify(element));
+            console.log("ADD:       data len=" +data.length);
 
-            var start = element.start.valueOf();
-            var end   = element.end.  valueOf();
+            element.platform_id   = strip(element.group);
+            element.content       = "";  // to force missing info --skip save, etc
+            element.state         = element.content;
+            element.status        = "status_new";
+            element.className     = element.status + " " + "block-body";
 
-            /* initially, a 1-day length token. But commented out because the
-             * default token length provided by timeline.js is good enough (ie.,
-             * relative to the current visible range).
-             */
-//            var m = moment(start);
-//            m.hours(0);
-//            m.minutes(0);
-//            m.seconds(0);
-//            console.log("onAdd:     m =" + m.format());
-//            start = m.toDate();
-//            var dayMs = 24 * 60 * 60 * 1000;
-//            end = new Date(start.valueOf() + dayMs);
-
-            var index = tokenInfos.length;
-
-            var tokenInfo = new TokenInfo({
-                'platform_id'  : element.group,
-                'start'     : start,
-                'end'       : end,
-                'state'     : "",
-                'status'    : "status_new"
-            });
-            tokenInfos.push(tokenInfo);
-
-            console.log("onAdd: pushed tokenInfo=" +JSON.stringify(tokenInfo));
-
-            element.start = start;
-            element.end   = end;
-            element.content = tokenInfo.state;
-
-            element.className = tokenInfo.status + " " + "block-body";
-            element.tokenInfo =  {'kind': 'body', 'index': index};
+            console.log("ADD: element=" +JSON.stringify(element));
 
             self.redraw();
         };
@@ -248,9 +210,8 @@ function TimelineWidget(container, tokenForm) {
                 return;
             }
 
-            var index = element.tokenInfo.index;
-            var kind  = element.tokenInfo.kind;
-            var tokenInfo = tokenInfos[index];
+            var index = row;
+            var tokenInfo = element;
 
             console.log("tokenInfo: " + JSON.stringify(tokenInfo));
 
@@ -263,14 +224,11 @@ function TimelineWidget(container, tokenForm) {
 
             console.log("bodyBlock:  " + JSON.stringify(bodyBlock));
 
-            assert(kind === "body", "block kind must be body");
-
             tokenInfo.start = bodyBlock.start;
             tokenInfo.end   = bodyBlock.end;
 
             updateStatusModified(index, tokenInfo);
 
-            prepareHover();
             self.redraw();
         };
 
@@ -300,11 +258,10 @@ function TimelineWidget(container, tokenForm) {
         else {
             self.updateStatus(index, tokenInfo, tokenInfo.status + "_modified");
         }
-        console.log("modifed status set to: " + tokenInfo.status);
+        console.log("modified status set to: " + tokenInfo.status);
     }
 
     this.removeToken = function(tokenInfo, index, row) {
-        delete tokenInfos[index];
         self.timeline.deleteItem(row);
         console.log("token at index " +index+ " removed");
     };
@@ -314,10 +271,10 @@ function TimelineWidget(container, tokenForm) {
         var onEdit = function(event) {
             var row = getSelectedRow();
             var element = data[row];
-            console.log("data[" + row + "] = " + JSON.stringify(element));
+            console.log("EDIT: " + row + ": " + JSON.stringify(element));
 
-            var index = element.tokenInfo.index;
-            var tokenInfo = tokenInfos[index];
+            var index = row;
+            var tokenInfo = element;
 
             self.tokenForm.showForm({
                 tokenInfo: tokenInfo,
@@ -334,17 +291,20 @@ function TimelineWidget(container, tokenForm) {
 
                         if (modified) {
                             tokenInfo.status = "status_modified";
+                            tokenInfo.className = "block-body"  + " " + tokenInfo.status;
+                            //updateStatusModified(index, tokenInfo);
                         }
                     }
 
+                    tokenInfo.content = newTokenInfo.state;
                     tokenInfo.state = newTokenInfo.state;
-                    tokenInfo.start = newTokenInfo.start;
-                    tokenInfo.end   = newTokenInfo.end;
+                    tokenInfo.start = parseDate(newTokenInfo.start);
+                    tokenInfo.end   = parseDate(newTokenInfo.end);
 
                     console.log("!! accept tokenInfo = " + JSON.stringify(tokenInfo));
 
-                    pushBlock(tokenInfo, index, false);
-                    prepareHover();
+                    data[index] = tokenInfo;
+
                     self.redraw();
 
                 },
@@ -364,17 +324,8 @@ function TimelineWidget(container, tokenForm) {
     function addSelectListener() {
         var onSelect = function(event) {
             var row = getSelectedRow();
-            if (oldSelectedIndex >= 0) {
-                deselect(oldSelectedIndex);
-                oldSelectedIndex = -1;
-            }
             if (row) {
-                console.log("onSelect (" +oldSelectedIndex+ "): " + JSON.stringify(data[row]));
-                var newIndex = data[row].tokenInfo.index;
-                var tokenInfo = tokenInfos[newIndex];
-                console.log("tokenInfo = " + JSON.stringify(tokenInfo));
-                select(newIndex);
-                oldSelectedIndex = newIndex;
+                console.log("SELECT: row=" + row + ": " + JSON.stringify(data[row]));
                 self.timeline.selectItem(row);
             }
         };
@@ -386,10 +337,8 @@ function TimelineWidget(container, tokenForm) {
         var onDelete = function(event) {
             var row = getSelectedRow();
             if (row) {
-                console.log("onDelete: " + JSON.stringify(data[row]));
-                var newIndex = data[row].tokenInfo.index;
-                var tokenInfo = tokenInfos[newIndex];
-                console.log("tokenInfo = " + JSON.stringify(tokenInfo));
+                console.log("DELETE: " + JSON.stringify(data[row]));
+                var newIndex = row;
 
                 self.timeline.cancelDelete();
 
@@ -421,50 +370,23 @@ function TimelineWidget(container, tokenForm) {
 
     function formattedGroup(platform_id) {
         platform_id = strip(platform_id);
-        var tml = groups[platform_id].tml;
-        var id  = groups[platform_id].id;
+        var domId  = groups[platform_id].domId;
         var tooltip, color;
-        if (tml === undefined) {
+        if (domId === undefined) {
             // should not happen
-            return "<div style='color: red'"
-                 + " id='" +id+ "'>" + platform_id + "</div>";
+            return "<div style='color: red'>" + platform_id + "</div>";
         }
         else {
-            tooltip = tml.platform_name;
+            tooltip = platform_id;
             color = "green";
             return "<div style='color: green' title='" +tooltip+ "'"
-                 + " id='" +id+ "'>" + platform_id + "</div>";
+                 + " id='" +domId+ "'>" + platform_id + "</div>";
         }
     }
 
-    function pushBlock(token, index, push) {
-
-        var reallyPush = push === undefined || push;
-
-        var start = token.start;
-        var end   = token.end;
-
+    function pushBlockDummy(platform_id) {
         var body = {
-            'start':      parseDate(start),
-            'end':        parseDate(end),
-
-            'content':    token.state,
-            'group':      formattedGroup(token.platform_id),
-            'className':  token.status + " " + "block-body",
-            'tokenInfo':  {'kind': 'body', 'index': index}
-        };
-
-        if (reallyPush) {
-            data.push(body);
-        }
-        else {
-            data[index] = body;
-        }
-    }
-
-    function pushBlockDummy(tokenInfo) {
-        var body = {
-            'group': formattedGroup(tokenInfo.group)
+            'group': formattedGroup(platform_id)
         };
         data.push(body);
     }

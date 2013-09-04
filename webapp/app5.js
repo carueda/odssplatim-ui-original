@@ -32,6 +32,7 @@ $(document).ready(function() {
     self.refresh = function() {
         console.log("refreshing...");
         pprogress("refreshing...");
+        timelineWidget.reinit();
         refreshPeriods();
     };
 
@@ -62,7 +63,7 @@ $(document).ready(function() {
     }
 
     function setVisibleChartRange(start, end) {
-        console.log("setVisibleChartRange: start=" +start+ " end=" + end);
+        //console.log("setVisibleChartRange: start=" +start+ " end=" + end);
         if (start === undefined || end === undefined) {
             timelineWidget.adjustVisibleChartRange();
         }
@@ -113,7 +114,7 @@ $(document).ready(function() {
                 platform_name: res[s].name
             };
             tt.timelines.push(tml);
-            timelineWidget.addGroup(tml);
+            timelineWidget.addGroup(tml.platform_id);
         }
         timelineWidget.reinit();
     }
@@ -125,7 +126,7 @@ $(document).ready(function() {
             var tml = tt.timelines[s];
             console.log("addGroup: " + JSON.stringify(tml));
 
-            timelineWidget.addGroup(tml);
+            timelineWidget.addGroup(tml.platform_id);
         }
     }
 
@@ -180,14 +181,19 @@ $(document).ready(function() {
 
 
     $(document).ajaxError(function(event, request, settings) {
-        perror("Error requesting page " + settings.url + ". Try again later.");
+        perror("Error making request to " + settings.url + ". Try again later.");
     });
 
     $("#save").click(function() {
-        var tokenInfos = timelineWidget.tokenInfos;
+        var elements = timelineWidget.data;
+        console.log("SAVE: elements in timeline: " + elements.length);
+
+        // message will be replaced is there is any actual element to be saved
+        pprogress("No new or modified tokens to save");
+
         var skipped = 0;
-        for (var index = 0; index < tokenInfos.length; index++) {
-            var tokenInfo = tokenInfos[index];
+        for (var index = 0; index < elements.length; index++) {
+            var tokenInfo = elements[index];
             if (isNewOrModifiedToken(tokenInfo)) {
                 if (isOkToBeSaved(tokenInfo)) {
                     saveToken(tokenInfo, index);
@@ -223,11 +229,11 @@ $(document).ready(function() {
         console.log("saveToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
         var item = {
-            id:      tokenInfo.id,
-            platform_id: strip(tokenInfo.platform_id),
-            start:    unparseDate(tokenInfo.start),
-            end:      unparseDate(tokenInfo.end),
-            state:    tokenInfo.state
+            id:            tokenInfo.token_id,
+            platform_id:   strip(tokenInfo.platform_id),
+            start:         unparseDate(tokenInfo.start),
+            end:           unparseDate(tokenInfo.end),
+            state:         tokenInfo.state
         };
 
         if (item.id !== undefined) {
@@ -236,7 +242,7 @@ $(document).ready(function() {
             pprogress("saving update to token ...");
 
             $.ajax({
-                url:       odssplatimConfig.rest + "/tokens",
+                url:       odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id,
                 type:      "PUT",
                 dataType:  "json",
                 data:       item,
@@ -270,7 +276,7 @@ $(document).ready(function() {
                 success: function(data) {
                     success();
                     console.log("POST token response " + JSON.stringify(data));
-                    tokenInfo.id = data.id;
+                    tokenInfo.token_id = data.id;
                     timelineWidget.updateStatus(index, tokenInfo, "status_saved");
                     console.log("token posted " + JSON.stringify(tokenInfo));
                 },
@@ -297,18 +303,18 @@ $(document).ready(function() {
             function() {
                 // removal confirmed.
 
-                if (tokenInfo.id === undefined) {
+                if (tokenInfo.token_id === undefined) {
                     // just remove block from timeline:
                     timelineWidget.removeToken(tokenInfo, index, row);
                     return;
                 }
 
                 // token exists in the db.
-                console.log("deleteToken: id = " + tokenInfo.id);
+                console.log("deleteToken: id = " + tokenInfo.token_id);
                 pprogress("deleting token ...");
 
                 $.ajax({
-                    url:       odssplatimConfig.rest + "/tokens/" + tokenInfo.id,
+                    url:       odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id,
                     type:      "DELETE",
                     dataType:  "json",
 
@@ -352,27 +358,10 @@ $(document).ready(function() {
         console.log("gotPlatforms: " + JSON.stringify(res));
         for (var s = 0; s < res.length; s++) {
             var elm = res[s];
-            var tml = {
-                platform_id:     elm.id,
-                platform_name:   elm.name
-            };
-            timelineWidget.addGroup(tml);
+            var platform_id = elm.id;
+            timelineWidget.addGroup(platform_id);
             timelineWidget.redraw();
         }
     }
 
 });
-
-
-function TokenInfo(obj) {
-    var self = this;
-    var defaults = {
-        'id'           : undefined,
-        'platform_id'   : undefined,
-        'start'         : undefined,
-        'end'           : undefined,
-        'state'         : undefined,
-        'status'        : "status_new"
-    };
-    jQuery.extend(self, defaults, obj);
-}

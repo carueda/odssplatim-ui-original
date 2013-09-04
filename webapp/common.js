@@ -1,51 +1,3 @@
-function pushBlocks(tokenInfo, index, data) {
-
-    // note: blocks always editable even for accepted tokens because the
-    // widget restricts too much if we indicate editable=false.
-
-    var start = {
-        'start':      tokenInfo.early_start,
-        'end':        tokenInfo.late_start,
-        'content':    "", //"start",
-        'group':      tokenInfo.group,
-        'className':  tokenInfo.status + " " + "block-start",
-        'tokenInfo':  {'kind': 'start', 'index': index}
-    };
-
-    var body = {
-        'start':      tokenInfo.late_start,
-        'end':        tokenInfo.early_end,
-        'content':    tokenInfo.content,
-        'group':      tokenInfo.group,
-        'className':  tokenInfo.status + " " + "block-body",
-        'tokenInfo':  {'kind': 'body', 'index': index}
-    };
-
-    var end = {
-        'start':      tokenInfo.early_end,
-        'end':        tokenInfo.late_end,
-        'content':    "", //"end",
-        'group':      tokenInfo.group,
-        'className':  tokenInfo.status + " " + "block-end",
-        'tokenInfo':  {'kind': 'end', 'index': index}
-    };
-
-    var background = {
-        'start':      tokenInfo.early_start,
-        'end':        tokenInfo.late_end,
-        'content':    "",
-        'group':      tokenInfo.group,
-        'className':  'backgroud-block',
-        'tokenInfo':  {'kind': 'background', 'index': index}
-    };
-
-    // push the 4 blocks associated to each token:
-    data.push(background);
-    data.push(start);
-    data.push(body);
-    data.push(end);
-}
-
 function strip(html) {
     var tmp = document.createElement("DIV");
     tmp.innerHTML = html;
@@ -91,7 +43,7 @@ function pstatus(msg, autohide) {
         $("#status").text("");
     }
     else if (autohide == undefined || autohide == true) {
-        $("#status").text(msg)
+        $("#status").stop(true, true).text(msg)
             .fadeIn(0).delay(2000).fadeOut(1000);
     }
     else {
@@ -100,12 +52,13 @@ function pstatus(msg, autohide) {
 }
 
 function pprogress(msg) {
-    if ( msg == undefined || msg == "") {
-        $("#status").text("");
-    }
-    else {
-        pstatus(msg, false);
-    }
+    pstatus(msg);
+//    if ( msg == undefined || msg == "") {
+//        $("#status").text("");
+//    }
+//    else {
+//        pstatus(msg, false);
+//    }
 }
 
 function perror(err) {
@@ -117,7 +70,7 @@ function perror(err) {
 }
 
 function success() {
-    pprogress();
+    //pprogress();
     $("#error").text("");
 }
 
