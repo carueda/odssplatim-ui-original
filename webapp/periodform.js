@@ -37,7 +37,7 @@ function PeriodForm(app) {
             $newPeriodSection.show();
             $newPeriodField.focus();
 
-            // initialize with current visible range for mising field:
+            // initialize with current visible range for missing field:
             var dr = app.timelineWidget.getVisibleChartRange();
             console.log("curr vis range: " +JSON.stringify(dr));
             if ($start.val().trim() === "") {
@@ -67,11 +67,63 @@ function PeriodForm(app) {
         width: 450,
         modal: true,
         buttons: {
+            Default:   setDefaultPeriod,
             Save:      savePeriod,
             Delete:    deletePeriod,
             Cancel:    function() {$form.dialog("close");}
         }
     });
+
+    function setDefaultPeriod() {
+        var id = $periodSelection.val();
+        if (id === CREATE ) {
+            return;
+        }
+
+        if (id === ALL_TOKENS ) {
+            // means, remove the default period.
+            console.log("removing default period");
+            pprogress("setting default period to cover all tokens");
+            $.ajax({
+                url:      odssplatimConfig.rest + "/periods/default",
+                type:     "DELETE",
+
+                success: function(res) {
+                    success();
+                    console.log("DELETE /periods/default response " + JSON.stringify(res));
+                    $periodSelection.focus();
+                },
+
+                error: function (xhr, ajaxOptions, thrownError) {
+                    perror("error: " + thrownError);
+                }
+            }).always(function() {
+                pprogress();
+            });
+        }
+        else {
+            var periodInfo = periodsById[id];
+
+            console.log("setting default period " + id+ ": " + JSON.stringify(periodInfo));
+            pprogress("setting default period");
+            $.ajax({
+                url:      odssplatimConfig.rest + "/periods/default/" + id,
+                type:     "PUT",
+
+                success: function(res) {
+                    success();
+                    console.log("PUT /periods/default response " + JSON.stringify(res));
+                    $periodSelection.focus();
+                },
+
+                error: function (xhr, ajaxOptions, thrownError) {
+                    perror("error: " + thrownError);
+                }
+            }).always(function() {
+                pprogress();
+            });
+        }
+    }
 
     function savePeriod() {
         var id = $periodSelection.val();
@@ -95,6 +147,7 @@ function PeriodForm(app) {
             'end':      end
         };
 
+        var url = odssplatimConfig.rest + "/periods";
         var type;
 
         if (id == CREATE) {
@@ -120,6 +173,7 @@ function PeriodForm(app) {
             newPeriodInfo.id  = id;
             newPeriodInfo.name = periodInfo.name;
 
+            url += "/" + id;
             type = "PUT";
             console.log("savePeriod: updating=" +JSON.stringify(newPeriodInfo));
             pstatus("updating period '" +newPeriodInfo.name+ "'");
@@ -127,7 +181,7 @@ function PeriodForm(app) {
 
         // do POST or PUT as determined above:
         $.ajax({
-            url:      odssplatimConfig.rest + "/periods",
+            url:      url,
             type:     type,
             dataType: "json",
             data:     newPeriodInfo,
@@ -198,10 +252,25 @@ function PeriodForm(app) {
 
     function populatePeriodSelection() {
         $periodSelection.empty();
-        $periodSelection.append($("<option />").text(ALL_TOKENS));
+        if (app.defaultPeriodId === undefined ){
+            $periodSelection.append($("<option selected/>").text(ALL_TOKENS));
+            $start.val("");
+            $end  .val("");
+        }
+        else {
+            $periodSelection.append($("<option />").text(ALL_TOKENS));
+        }
         for (var id in periodsById) {
             var name = periodsById[id].name;
-            $periodSelection.append($("<option />").val(id).text(name));
+            if (id === app.defaultPeriodId) {
+                $periodSelection.append($("<option selected/>").val(id).text(name));
+                var per = app.getPeriods()[id];
+                $start.val(per.start);
+                $end  .val(per.end);
+            }
+            else {
+                $periodSelection.append($("<option />").val(id).text(name));
+            }
         }
         $periodSelection.append($("<option />").text(CREATE));
     }
@@ -210,14 +279,16 @@ function PeriodForm(app) {
 
         $newPeriodSection.hide();
 
-        var periods = app.getPeriods();
-        for (var s = 0; s < periods.length; s++) {
-            periodsById[periods[s].id] = {
-                'name':   periods[s].name,
-                'start':  periods[s].start,
-                'end':    periods[s].end
-            };
-        }
+        periodsById = app.getPeriods();
+
+//        var periods = app.getPeriods();
+//        for (var s = 0; s < periods.length; s++) {
+//            periodsById[periods[s].id] = {
+//                'name':   periods[s].name,
+//                'start':  periods[s].start,
+//                'end':    periods[s].end
+//            };
+//        }
 
         console.log("PeriodForm showForm: periodsById=" + JSON.stringify(periodsById));
 

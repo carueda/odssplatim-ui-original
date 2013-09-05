@@ -7,6 +7,8 @@ $(document).ready(function() {
 
     var periods = {};
 
+    self.defaultPeriodId = null;
+
     self.getPeriods = function() { return periods; };
 
     var tokenForm    = new TokenForm(self);
@@ -57,19 +59,62 @@ $(document).ready(function() {
     }
 
     function gotPeriods(res) {
-        periods = res;
-        console.log("gotPeriods: " + JSON.stringify(periods));
+        console.log("gotPeriods: " + JSON.stringify(res));
+        periods = {};
+        for (var i = 0; i < res.length; i++) {
+            var per = res[i];
+            periods[per.id] = per;
+        }
+        console.log("periods: " + JSON.stringify(periods));
+        getDefaultPeriodId();
+    }
+
+    function getDefaultPeriodId() {
+        console.log("Calling url = " + odssplatimConfig.rest + "/periods/default");
+        $.ajax({
+            url:       odssplatimConfig.rest + "/periods/default",
+            type:      "GET",
+            dataType:  "json",
+
+            success: function(res) {
+                success();
+                gotDefaultPeriodId(res);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 404) {
+                    success();
+                    gotDefaultPeriodId();
+                }
+                else {
+                    perror("error: " + thrownError);
+                }
+            }
+        });
+    }
+
+    function gotDefaultPeriodId(res) {
+        console.log("gotDefaultPeriodId: " + JSON.stringify(res));
+        self.defaultPeriodId = res && res.defaultPeriodId;
         refreshTimelines({ /*pending req*/ });
     }
 
-    function setVisibleChartRange(start, end) {
-        //console.log("setVisibleChartRange: start=" +start+ " end=" + end);
-        if (start === undefined || end === undefined) {
-            timelineWidget.adjustVisibleChartRange();
+    function setVisibleChartRange() {
+
+        console.log("setVisibleChartRange: self.defaultPeriodId = '" + self.defaultPeriodId+ "'");
+        var defaultPeriod = null;
+        if (self.defaultPeriodId !== undefined) {
+            defaultPeriod = periods[self.defaultPeriodId];
         }
-        else {
+        console.log("defaultPeriod = " + JSON.stringify(defaultPeriod));
+
+        if (defaultPeriod) {
+            var start = defaultPeriod.start;
+            var end   = defaultPeriod.end;
             timelineWidget.setVisibleChartRange(moment(start).add("d", -1),
                                                 moment(end).  add("d", +1));
+        }
+        else {
+            timelineWidget.adjustVisibleChartRange();
         }
     }
 
@@ -180,9 +225,12 @@ $(document).ready(function() {
     /////////////////////////////////////////////////////////////////////////
 
 
-    $(document).ajaxError(function(event, request, settings) {
-        perror("Error making request to " + settings.url + ". Try again later.");
-    });
+//    $(document).ajaxError(function(event, request, settings) {
+//        console.log("ajaxError: event    = " + JSON.stringify(event));
+//        console.log("ajaxError: request  = " + JSON.stringify(request));
+//        console.log("ajaxError: settings = " + JSON.stringify(settings));
+//        perror("Error making request to " + settings.url + ". Try again later.");
+//    });
 
     $("#save").click(function() {
         var elements = timelineWidget.data;
