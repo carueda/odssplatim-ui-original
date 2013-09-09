@@ -27,11 +27,16 @@ $(document).ready(function() {
         platformForm.showForm();
     });
 
+    $("#versions").click(function() {
+        pstatus("versions not implemented yet");
+    });
+
     $("#refresh").click(function() {
         self.refresh();
     });
 
     self.refresh = function() {
+        perror();
         console.log("refreshing...");
         pprogress("refreshing...");
         timelineWidget.reinit();
@@ -46,7 +51,6 @@ $(document).ready(function() {
             url:       odssplatimConfig.rest + "/periods",
             type:      "GET",
             dataType:  "json",
-            data:      {},
 
             success: function(res) {
                 success();
@@ -188,7 +192,6 @@ $(document).ready(function() {
             url:       odssplatimConfig.rest + "/timelines/" + platform_id,
             type:      "GET",
             dataType:  "json",
-            data:      {},
 
             success: function(res) {
                 success();
@@ -277,23 +280,24 @@ $(document).ready(function() {
         console.log("saveToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
         var item = {
-            id:            tokenInfo.token_id,
             platform_id:   strip(tokenInfo.platform_id),
             start:         unparseDate(tokenInfo.start),
             end:           unparseDate(tokenInfo.end),
             state:         tokenInfo.state
         };
 
-        if (item.id !== undefined) {
+        if (tokenInfo.token_id !== undefined) {
             // update existing token:
-            console.log("saveToken: updating token " + JSON.stringify(item));
-            pprogress("saving update to token ...");
+            console.log("saveToken: updating token_id=" +tokenInfo.token_id+
+                        ": " +JSON.stringify(item));
+            pprogress("saving token update ...");
 
             $.ajax({
-                url:       odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id,
-                type:      "PUT",
-                dataType:  "json",
-                data:       item,
+                url:         odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id,
+                type:        "PUT",
+                dataType:    "json",
+                contentType: "application/json",
+                data:        JSON.stringify(item),
 
                 success: function(res) {
                     success();

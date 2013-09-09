@@ -170,7 +170,6 @@ function PeriodForm(app) {
         else {
             // update existing period.
             var periodInfo = periodsById[id];
-            newPeriodInfo.id  = id;
             newPeriodInfo.name = periodInfo.name;
 
             url += "/" + id;
