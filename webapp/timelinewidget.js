@@ -79,6 +79,7 @@ function TimelineWidget(container, tokenForm) {
     this.reinit = function() {
         self.timeline.deleteAllItems();
         data.lenght = 0;
+        groups.length = 0;
     };
 
 
