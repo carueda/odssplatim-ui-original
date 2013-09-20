@@ -9,7 +9,6 @@ function TimelineWidget(container, tokenForm) {
 
     self.groups = {};
     var groups = self.groups;
-    var nextPlatformId = 0;
 
     var options = {
         'width':            '99%',
@@ -109,28 +108,29 @@ function TimelineWidget(container, tokenForm) {
         }
     };
 
-    this.addGroup = function(platform_id) {
-
+    this.addGroup = function(tml) {
+        var platform_id = tml.platform_id;
         if (platform_id in groups) {
             console.log("addGroup: already added: " + platform_id);
             return;
         }
 
-        var domId = "plat_" + nextPlatformId++;
-
         groups[platform_id] = {
-            'domId' : domId
+            'tml':    tml
         };
 
         pushBlockDummy(platform_id);
 
-        $(document).on("click", "#" +domId, function() {
+        $(document).on("click", "#" +platform_id, function() {
             platformClicked(platform_id);
         });
     };
 
     function platformClicked(platform_id) {
-        console.log("platformClicked= '" + platform_id + "'");
+        var platform_name = groups[platform_id].tml.platform_name;
+
+        console.log("platformClicked= '" + platform_id + "' " +
+                "platform_name = '" + platform_name+ "'");
     }
 
     this.addToken = function(token) {
@@ -370,18 +370,11 @@ function TimelineWidget(container, tokenForm) {
 
     function formattedGroup(platform_id) {
         platform_id = strip(platform_id);
-        var domId  = groups[platform_id].domId;
-        var tooltip, color;
-        if (domId === undefined) {
-            // should not happen
-            return "<div style='color: red'>" + platform_id + "</div>";
-        }
-        else {
-            tooltip = platform_id;
-            color = "green";
-            return "<div style='color: green' title='" +tooltip+ "'"
-                 + " id='" +domId+ "'>" + platform_id + "</div>";
-        }
+        var platform_name = groups[platform_id].tml.platform_name;
+
+        var tooltip = platform_name + " (id=" + platform_id + ")";
+        return "<div style='color: green' title='" +tooltip+ "'"
+             + " id='" +platform_id+ "'>" + platform_name + "</div>";
     }
 
     function pushBlockDummy(platform_id) {

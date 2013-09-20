@@ -32,8 +32,8 @@ function PlatformForm(app) {
         width: 450,
         modal: true,
         buttons: {
-            Add:      addPlatform,
-            Delete:   deletePlatform,
+            //Add:      addPlatform,
+            //Delete:   deletePlatform,
             Cancel:   function() {$form.dialog("close");}
         }
     });

@@ -147,7 +147,6 @@ $(document).ready(function() {
         console.log("gotTimelines = " + JSON.stringify(res));
 
         initTimelines(req, res);
-        putGroups();
         putTokens();
         drawTimelineWidget();
         setVisibleChartRange();
@@ -156,6 +155,7 @@ $(document).ready(function() {
     function initTimelines(req, res) {
         console.log("initTimelines: " + JSON.stringify(res));
 
+        timelineWidget.reinit();
         tt.timelines = [];
         for (var s = 0; s < res.length; s++) {
             var tml = {
@@ -163,19 +163,7 @@ $(document).ready(function() {
                 platform_name: res[s].name
             };
             tt.timelines.push(tml);
-            timelineWidget.addGroup(tml.platform_id);
-        }
-        timelineWidget.reinit();
-    }
-
-    function putGroups() {
-        console.log("putGroups: " + JSON.stringify(tt.timelines));
-
-        for (var s = 0; s < tt.timelines.length; s++) {
-            var tml = tt.timelines[s];
-            console.log("addGroup: " + JSON.stringify(tml));
-
-            timelineWidget.addGroup(tml.platform_id);
+            timelineWidget.addGroup(tml);
         }
     }
 
@@ -409,9 +397,11 @@ $(document).ready(function() {
     function gotPlatforms(res) {
         console.log("gotPlatforms: " + JSON.stringify(res));
         for (var s = 0; s < res.length; s++) {
-            var elm = res[s];
-            var platform_id = elm.id;
-            timelineWidget.addGroup(platform_id);
+            var tml = {
+                platform_id:   res[s].id,
+                platform_name: res[s].name
+            };
+            timelineWidget.addGroup(tml);
             timelineWidget.redraw();
         }
     }
