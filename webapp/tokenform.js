@@ -105,7 +105,7 @@ function TokenForm(app) {
         end  .datetimepicker("option", "disabled", readOnly);
 
         state.val(tokenInfo.state);
-        on_timeline.val(strip(tokenInfo.platform_id));
+        on_timeline.val(strip(tokenInfo.platform_name));
 
         start.val(unparseDate(tokenInfo.start));
         end  .val(unparseDate(tokenInfo.end));

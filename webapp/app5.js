@@ -169,13 +169,15 @@ $(document).ready(function() {
 
     function putTokens() {
         for (var s = 0; s < tt.timelines.length; s++) {
-            getTokens(tt.timelines[s].platform_id);
+            getTokens(tt.timelines[s]);
         }
     }
 
-    function getTokens(platform_id) {
-//        console.log("getting tokens for " + platform_id);
-        pprogress("getting tokens for " + platform_id);
+    function getTokens(tml) {
+        var platform_id   = tml.platform_id;
+        var platform_name = tml.platform_name;
+//        console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
+        pprogress("getting tokens for " + platform_name);
         $.ajax({
             url:       odssplatimConfig.rest + "/timelines/" + platform_id,
             type:      "GET",
