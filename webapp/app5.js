@@ -37,6 +37,7 @@ $(document).ready(function() {
 
     self.refresh = function() {
         perror();
+        $("#logarea").html("");
         console.log("refreshing...");
         pprogress("refreshing...");
         timelineWidget.reinit();
@@ -185,7 +186,7 @@ $(document).ready(function() {
 
             success: function(res) {
                 success();
-                gotTokens(platform_id, res);
+                gotTokens(tml, res);
             },
 
             error: function (xhr, ajaxOptions, thrownError) {
@@ -194,15 +195,19 @@ $(document).ready(function() {
         });
     }
 
-    function gotTokens(platform_id, tokens) {
+    function gotTokens(tml, tokens) {
+        var platform_id   = tml.platform_id;
+        var platform_name = tml.platform_name;
+
         if (tokens.length == 0) {
             return;
         }
-        console.log("got tokens for " + platform_id + ": " + JSON.stringify(tokens));
+        console.log("got tokens for " + platform_name + " (" +platform_id+ ")" + ": " + JSON.stringify(tokens));
 
         for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
-            token.status = "status_saved";
+            token.platform_name  = platform_name;
+            token.status         = "status_saved";
             timelineWidget.addToken(token);
         }
 
@@ -407,5 +412,14 @@ $(document).ready(function() {
             timelineWidget.redraw();
         }
     }
+
+    // see http://stackoverflow.com/a/15734408/830737
+    $(function () {
+      $(document).tooltip({
+          content: function () {
+              return $(this).prop('title');
+          }
+      });
+    });
 
 });

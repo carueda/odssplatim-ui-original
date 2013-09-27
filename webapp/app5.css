@@ -207,3 +207,8 @@ div.block-body {
   text-decoration:none;
   text-shadow:1px 1px 0 #ffffff;
 }
+
+
+div.ui-tooltip {
+    max-width: 700px;
+}

@@ -132,6 +132,10 @@ function TimelineWidget(container, tokenForm) {
 
         console.log("platformClicked= '" + platform_id + "' " +
                 "platform_name = '" + platform_name+ "'");
+
+        if (window.location.toString().match(/.*\?debug/)) {
+            $("#logarea").html(tablify(groups[platform_id].tml));
+        }
     }
 
     this.addToken = function(token) {
@@ -141,12 +145,13 @@ function TimelineWidget(container, tokenForm) {
         var body = {
             'start':          parseDate(token.start),
             'end':            parseDate(token.end),
-            'content':        token.state,
+            'content':        getTokenContent(token),
             'group':          formattedGroup(token.platform_id),
             'className':      token.status + " " + "block-body",
 
             'token_id':       token.id,
             'platform_id':    token.platform_id,
+            'platform_name':  token.platform_name,
             'state':          token.state,
             'status':         token.status
         };
@@ -167,9 +172,15 @@ function TimelineWidget(container, tokenForm) {
             var element = data[row];
 
             console.log("ADD: row=" +row+ " element=" +JSON.stringify(element));
-            console.log("ADD:       data len=" +data.length);
 
-            element.platform_id   = strip(element.group);
+            /*
+             * too bad groups in links's timeline cannot be associated with
+             * properties or other elements in a flexible way; have to resort
+             * to capture elements in the html snippet.
+             */
+            element.platform_id   = element.group.match(/id='(.*)'/)[1];
+            element.platform_name = strip(element.group);
+
             element.content       = "";  // to force missing info --skip save, etc
             element.state         = element.content;
             element.status        = "status_new";
@@ -326,8 +337,17 @@ function TimelineWidget(container, tokenForm) {
         var onSelect = function(event) {
             var row = getSelectedRow();
             if (row) {
-                console.log("SELECT: row=" + row + ": " + JSON.stringify(data[row]));
+                var element = data[row];
+
+                if (window.location.toString().match(/.*\?debug/)) {
+                    $("#logarea").html(tablify(element));
+                }
+
+                console.log("SELECT: row=" + row + ": " + JSON.stringify(element));
                 self.timeline.selectItem(row);
+            }
+            else {
+                $("#logarea").html("");
             }
         };
 
@@ -373,9 +393,12 @@ function TimelineWidget(container, tokenForm) {
         platform_id = strip(platform_id);
         var platform_name = groups[platform_id].tml.platform_name;
 
-        var tooltip = platform_name + " (id=" + platform_id + ")";
-        return "<div style='color: green' title='" +tooltip+ "'"
-             + " id='" +platform_id+ "'>" + platform_name + "</div>";
+        // no tooltip for now
+        return "<div id='" +platform_id+ "'>" + platform_name + "</div>";
+
+//        var tooltip = tablify(groups[platform_id].tml);
+//        return "<div title='" +tooltip+ "'"
+//             + " id='" +platform_id+ "'>" + platform_name + "</div>";
     }
 
     function pushBlockDummy(platform_id) {
@@ -384,4 +407,73 @@ function TimelineWidget(container, tokenForm) {
         };
         data.push(body);
     }
+
+    function tablify(obj, simple) {
+        simple = simple === undefined || simple;
+
+        function escape(s) {
+            return s === undefined || s === null ? s :
+                    s.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        }
+
+        if (obj === null) {
+            return null;
+        }
+        if (typeof obj === "string") {
+            return escape(obj);
+        }
+        if (typeof obj === "function") {
+            return "function";
+        }
+        if (typeof obj !== "object") {
+            return escape(JSON.stringify(obj));
+            //return obj;
+        }
+
+        var result = '<table>';  // assuming there are own properties
+
+        var own = 0;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                own += 1;
+                (function(key) {
+                    result +=
+                        '<tr>' +
+                        '<td style="vertical-align:middle">' +
+                             '<b>' +key+ '</b>:' +
+                        '</td>';
+
+                    if (!simple) {
+                        result +=
+                            '<td style="vertical-align:top; border:1pt solid #d9d9d9">' +
+                            escape(JSON.stringify(obj[key])) +
+                            '</td>';
+                    }
+                    result +=
+                        '<td style="vertical-align:top; border:1pt solid #d9d9d9">' +
+                        tablify(obj[key]) +
+                        '</td>' +
+                        '</tr>';
+                })(key);
+            }
+        }
+        if (own == 0) {
+            // no own properties
+            return escape(JSON.stringify(obj));
+        }
+
+        result += '</table>';
+        return result;
+    }
+
+    function getTokenContent(token) {
+
+        return token.state;
+
+//        var tooltip = tablify(token);
+//        //console.log("tootip = " + tooltip);
+//        var content = "<div title='" +tooltip+ "'>" +token.state+ "</div>";
+//        return content;
+    }
+
 }
