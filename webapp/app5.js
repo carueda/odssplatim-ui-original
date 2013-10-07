@@ -100,6 +100,35 @@ $(document).ready(function() {
     function gotDefaultPeriodId(res) {
         console.log("gotDefaultPeriodId: " + JSON.stringify(res));
         self.defaultPeriodId = res && res.defaultPeriodId;
+        getHolidays();
+    }
+
+    function getHolidays() {
+        console.log("Calling url = " + odssplatimConfig.rest + "/periods/holidays");
+        $.ajax({
+            url:       odssplatimConfig.rest + "/periods/holidays",
+            type:      "GET",
+            dataType:  "json",
+
+            success: function(res) {
+                success();
+                gotHolidays(res);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 404) {
+                    success();
+                    gotHolidays();
+                }
+                else {
+                    perror("error: " + thrownError);
+                }
+            }
+        });
+    }
+
+    function gotHolidays(res) {
+        console.log("gotHolidays: " + JSON.stringify(res));
+        self.holidays = res && res.holidays;
         refreshTimelines({ /*pending req*/ });
     }
 
@@ -156,7 +185,7 @@ $(document).ready(function() {
     function initTimelines(req, res) {
         console.log("initTimelines: " + JSON.stringify(res));
 
-        timelineWidget.reinit();
+        timelineWidget.reinit(self.holidays);
         tt.timelines = [];
         for (var s = 0; s < res.length; s++) {
             var tml = {

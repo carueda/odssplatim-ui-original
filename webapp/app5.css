@@ -212,3 +212,11 @@ div.block-body {
 div.ui-tooltip {
     max-width: 700px;
 }
+
+/* see dateclasses.js */
+div.timeline-axis-grid-weekends {
+    background-color: #FAFAFA;
+}
+div.timeline-axis-grid-holiday {
+    background-color: #e9fff5;
+}

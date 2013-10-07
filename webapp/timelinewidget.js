@@ -76,10 +76,14 @@ function TimelineWidget(container, tokenForm) {
     }
 
 
-    this.reinit = function() {
+    this.reinit = function(holidays) {
         self.timeline.deleteAllItems();
         data.lenght = 0;
         groups.length = 0;
+        if (self.dc !== undefined) {
+            self.dc.destroy();
+        }
+        self.dc = new DateHighlighter(this.timeline, holidays)
     };
 
 
@@ -107,6 +111,7 @@ function TimelineWidget(container, tokenForm) {
         else {
             self.timeline.setVisibleChartRange(startDate, endDate, true);
         }
+        updateDateHighlights();
     };
 
     this.addGroup = function(tml) {
@@ -163,6 +168,13 @@ function TimelineWidget(container, tokenForm) {
 
     this.redraw = function() {
         self.timeline.redraw();
+        updateDateHighlights();
+    };
+
+    var updateDateHighlights = function() {
+        if (self.dc !== undefined) {
+            self.dc.applyClassesToDates();
+        }
     };
 
 
