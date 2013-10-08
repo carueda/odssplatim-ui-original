@@ -1,3 +1,9 @@
+function assert(value, desc) {
+    if (!value) {
+        perror("Assertion failed: " + desc);
+    }
+}
+
 function strip(html) {
     var tmp = document.createElement("DIV");
     tmp.innerHTML = html;
