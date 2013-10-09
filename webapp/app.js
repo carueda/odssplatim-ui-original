@@ -64,13 +64,13 @@ $(document).ready(function() {
     }
 
     function gotPeriods(res) {
-        console.log("gotPeriods: " + JSON.stringify(res));
+        //console.log("gotPeriods: " + JSON.stringify(res));
         periods = {};
         for (var i = 0; i < res.length; i++) {
             var per = res[i];
             periods[per.id] = per;
         }
-        console.log("periods: " + JSON.stringify(periods));
+        //console.log("periods: " + JSON.stringify(periods));
         getDefaultPeriodId();
     }
 
@@ -98,7 +98,7 @@ $(document).ready(function() {
     }
 
     function gotDefaultPeriodId(res) {
-        console.log("gotDefaultPeriodId: " + JSON.stringify(res));
+        //console.log("gotDefaultPeriodId: " + JSON.stringify(res));
         self.defaultPeriodId = res && res.defaultPeriodId;
         getHolidays();
     }
@@ -127,19 +127,19 @@ $(document).ready(function() {
     }
 
     function gotHolidays(res) {
-        console.log("gotHolidays: " + JSON.stringify(res));
+        //console.log("gotHolidays: " + JSON.stringify(res));
         self.holidays = res && res.holidays;
         refreshTimelines({ /*pending req*/ });
     }
 
     function setVisibleChartRange() {
 
-        console.log("setVisibleChartRange: self.defaultPeriodId = '" + self.defaultPeriodId+ "'");
+        //console.log("setVisibleChartRange: self.defaultPeriodId = '" + self.defaultPeriodId+ "'");
         var defaultPeriod = null;
         if (self.defaultPeriodId !== undefined) {
             defaultPeriod = periods[self.defaultPeriodId];
         }
-        console.log("defaultPeriod = " + JSON.stringify(defaultPeriod));
+        //console.log("defaultPeriod = " + JSON.stringify(defaultPeriod));
 
         if (defaultPeriod) {
             var start = defaultPeriod.start;
@@ -174,7 +174,7 @@ $(document).ready(function() {
 
     function gotTimelines(req, res) {
 
-        console.log("gotTimelines = " + JSON.stringify(res));
+        //console.log("gotTimelines = " + JSON.stringify(res));
 
         initTimelines(req, res);
         putTokens();
@@ -183,7 +183,7 @@ $(document).ready(function() {
     }
 
     function initTimelines(req, res) {
-        console.log("initTimelines: " + JSON.stringify(res));
+        //console.log("initTimelines: " + JSON.stringify(res));
 
         timelineWidget.reinit(self.holidays);
         tt.timelines = [];
@@ -206,7 +206,7 @@ $(document).ready(function() {
     function getTokens(tml) {
         var platform_id   = tml.platform_id;
         var platform_name = tml.platform_name;
-//        console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
+        //console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
         pprogress("getting tokens for " + platform_name);
         $.ajax({
             url:       odssplatimConfig.rest + "/timelines/" + platform_id,
@@ -231,7 +231,9 @@ $(document).ready(function() {
         if (tokens.length == 0) {
             return;
         }
-        console.log("got tokens for " + platform_name + " (" +platform_id+ ")" + ": " + JSON.stringify(tokens));
+        console.log("got tokens for " + platform_name + " (" +platform_id+ ")"
+                  // + ": " + JSON.stringify(tokens)
+        );
 
         for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
@@ -325,7 +327,7 @@ $(document).ready(function() {
 
                 success: function(res) {
                     success();
-                    console.log("PUT token response " + JSON.stringify(res));
+                    //console.log("PUT token response " + JSON.stringify(res));
                     timelineWidget.updateStatus(index, tokenInfo, "status_saved");
                     console.log("token updated " + JSON.stringify(tokenInfo));
                     //self.refresh();
@@ -351,7 +353,7 @@ $(document).ready(function() {
 
                 success: function(data) {
                     success();
-                    console.log("POST token response " + JSON.stringify(data));
+                    //console.log("POST token response " + JSON.stringify(data));
                     tokenInfo.token_id = data.id;
                     timelineWidget.updateStatus(index, tokenInfo, "status_saved");
                     console.log("token posted " + JSON.stringify(tokenInfo));
@@ -367,7 +369,7 @@ $(document).ready(function() {
 
     self.deleteToken = function(tokenInfo, index, row) {
 
-        console.log("deleteToken: tokenInfo=" + JSON.stringify(tokenInfo));
+        //console.log("deleteToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
         confirmDialog(
             "Remove token from the timeline" +
@@ -386,7 +388,7 @@ $(document).ready(function() {
                 }
 
                 // token exists in the db.
-                console.log("deleteToken: id = " + tokenInfo.token_id);
+                //console.log("deleteToken: id = " + tokenInfo.token_id);
                 pprogress("deleting token ...");
 
                 $.ajax({

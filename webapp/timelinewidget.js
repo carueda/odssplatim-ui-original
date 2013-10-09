@@ -145,7 +145,7 @@ function TimelineWidget(container, tokenForm) {
 
     this.addToken = function(token) {
 
-        console.log("addToken: " + JSON.stringify(token));
+        //console.log("addToken: " + JSON.stringify(token));
 
         var body = {
             'start':          parseDate(token.start),
@@ -161,7 +161,7 @@ function TimelineWidget(container, tokenForm) {
             'status':         token.status
         };
 
-        console.log("!! addToken= " + JSON.stringify(body));
+        //console.log("addToken: body= " + JSON.stringify(body));
 
         data.push(body);
     };
@@ -246,7 +246,7 @@ function TimelineWidget(container, tokenForm) {
 
             var bodyBlock  = data[index];
 
-            console.log("bodyBlock:  " + JSON.stringify(bodyBlock));
+            //console.log("bodyBlock:  " + JSON.stringify(bodyBlock));
 
             tokenInfo.start = bodyBlock.start;
             tokenInfo.end   = bodyBlock.end;
