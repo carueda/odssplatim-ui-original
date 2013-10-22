@@ -66,10 +66,9 @@ $(document).ready(function() {
     function gotPeriods(res) {
         //console.log("gotPeriods: " + JSON.stringify(res));
         periods = {};
-        for (var i = 0; i < res.length; i++) {
-            var per = res[i];
+        _.each(res, function(per) {
             periods[per.id] = per;
-        }
+        });
         //console.log("periods: " + JSON.stringify(periods));
         getDefaultPeriodId();
     }
@@ -200,9 +199,9 @@ $(document).ready(function() {
     }
 
     function putTokens() {
-        for (var s = 0; s < tt.timelines.length; s++) {
-            getTokens(tt.timelines[s]);
-        }
+        _.each(tt.timelines, function(timeline) {
+            getTokens(timeline);
+        });
     }
 
     function getTokens(tml) {
@@ -237,12 +236,11 @@ $(document).ready(function() {
                   // + ": " + JSON.stringify(tokens)
         );
 
-        for (var i = 0; i < tokens.length; i++) {
-            var token = tokens[i];
+        _.each(tokens, function(token) {
             token.platform_name  = platform_name;
             token.status         = "status_saved";
             timelineWidget.addToken(token);
-        }
+        });
 
         setVisibleChartRange();
         timelineWidget.redraw();
@@ -436,14 +434,15 @@ $(document).ready(function() {
 
     function gotPlatforms(res) {
         console.log("gotPlatforms: " + JSON.stringify(res));
-        for (var s = 0; s < res.length; s++) {
-            var tml = {
-                platform_id:   res[s].id,
-                platform_name: res[s].name
-            };
+        _.each(res, function(elm) {
+            var tml = _.extend({
+                platform_id:   elm.id,
+                platform_name: elm.name
+            }, elm);
+            tml = _.omit(tml, 'id', 'name');
             timelineWidget.addGroup(tml);
             timelineWidget.redraw();
-        }
+        });
     }
 
     // see http://stackoverflow.com/a/15734408/830737
