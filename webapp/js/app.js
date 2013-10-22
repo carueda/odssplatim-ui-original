@@ -154,6 +154,7 @@ $(document).ready(function() {
 
 
     function refreshTimelines(req) {
+        console.log("Calling url = " + odssplatimConfig.rest + "/timelines");
         $.ajax({
             url:       odssplatimConfig.rest + "/timelines",
             type:      "GET",
@@ -187,14 +188,15 @@ $(document).ready(function() {
 
         timelineWidget.reinit(self.holidays);
         tt.timelines = [];
-        for (var s = 0; s < res.length; s++) {
-            var tml = {
-                platform_id:   res[s].id,
-                platform_name: res[s].name
-            };
+        _.each(res, function(elm) {
+            var tml = _.extend({
+                platform_id:   elm.id,
+                platform_name: elm.name
+            }, elm);
+            tml = _.omit(tml, 'id', 'name');
             tt.timelines.push(tml);
             timelineWidget.addGroup(tml);
-        }
+        });
     }
 
     function putTokens() {

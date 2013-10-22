@@ -124,12 +124,12 @@ div.timeline-event-range {
 div.timeline-event-range-drag-left {
     z-index: 100;
     /*background: url(codebase/imgs/resize_dots.png) repeat-y;*/
-    background: url(codebase/imgs/resize_dots.png), repeat-y, repeat-x;
+    background: url(../codebase/imgs/resize_dots.png), repeat-y, repeat-x;
 }
 div.timeline-event-range-drag-right {
     z-index: 100;
     /*background: url(codebase/imgs/resize_dots.png) 6px repeat-y;*/
-    background: url(codebase/imgs/resize_dots.png), repeat-y, repeat-x;
+    background: url(../codebase/imgs/resize_dots.png), repeat-y, repeat-x;
 }
 
 
