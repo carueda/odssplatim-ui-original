@@ -1,6 +1,7 @@
+window.platformTypes = undefined;
 $(document).ready(function() {
     var self = this;
-    //window.app = self;  // to facilitate debugging in browser
+    window.odssPlatimApp = self;
     var tt = {};
     tt.startDate = undefined;
     tt.endDate = undefined;
@@ -232,9 +233,9 @@ $(document).ready(function() {
         if (tokens.length == 0) {
             return;
         }
-        console.log("got tokens for " + platform_name + " (" +platform_id+ ")"
-                  // + ": " + JSON.stringify(tokens)
-        );
+//        console.log("got tokens for " + platform_name + " (" +platform_id+ ")"
+//                  // + ": " + JSON.stringify(tokens)
+//        );
 
         _.each(tokens, function(token) {
             token.platform_name  = platform_name;
@@ -422,7 +423,7 @@ $(document).ready(function() {
 
             success: function(res) {
                 success();
-                console.log("getAllPlatforms: " + JSON.stringify(res));
+                //console.log("getAllPlatforms: " + JSON.stringify(res));
                 gotPlatforms(res);
             },
 
@@ -433,7 +434,8 @@ $(document).ready(function() {
     };
 
     function gotPlatforms(res) {
-        console.log("gotPlatforms: " + JSON.stringify(res));
+        //console.log("gotPlatforms: " + JSON.stringify(res));
+        window.platformTypes = [];
         _.each(res, function(elm) {
             var tml = _.extend({
                 platform_id:   elm.id,
@@ -442,6 +444,10 @@ $(document).ready(function() {
             tml = _.omit(tml, 'id', 'name');
             timelineWidget.addGroup(tml);
             timelineWidget.redraw();
+
+            if (!_.contains(window.platformTypes, tml.typeName)) {
+                window.platformTypes.push(tml.typeName)
+            }
         });
     }
 

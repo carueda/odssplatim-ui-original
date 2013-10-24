@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="odssPlatimApp">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>ODSS Platform Timeline Editor -- prototype</title>
 
     <link rel="stylesheet" href="vendor/jquery/ui/themes/smoothness/jquery-ui.css" />
+    <link rel='stylesheet' type='text/css' href='vendor/jquery/ui/addon/jquery-ui-timepicker-addon.css'>
+    <link rel='stylesheet' type='text/css' href='vendor/links/timeline.css'>
+    <link rel='stylesheet' type='text/css' href='css/app.css'>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
-
     <script src="vendor/jquery/ui/jquery-ui.js"></script>
-
     <script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
-    <link rel='stylesheet' type='text/css' href='vendor/jquery/ui/addon/jquery-ui-timepicker-addon.css'>
-
     <script src="vendor/moment/moment.js"></script>
     <script src="vendor/links/timeline.js"></script>
     <script src='vendor/links/datehighlight.js' charset="utf-8"></script>
     <script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src='js/controllers.js' charset="utf-8"></script>
+    <script src='js/model.js' charset="utf-8"></script>
 
     <script src='js/config.js' charset="utf-8"></script>
     <script src='js/common.js' charset="utf-8"></script>
@@ -26,12 +35,17 @@
     <script src='js/timelinewidget.js' charset="utf-8"></script>
     <script src='js/app.js' charset="utf-8"></script>
 
-    <link rel='stylesheet' type='text/css' href='vendor/links/timeline.css'>
-    <link rel='stylesheet' type='text/css' href='css/app.css'>
-
 </head>
 
 <body>
+
+<div>
+    <div ng-controller="PlatformCtrl">
+        <button class="btn" ng-click="open()">Platform</button>
+    </div>
+    <br/>
+</div>
+
 
 <div style="text-align:left">
     <button class="graybutton" id="refresh"

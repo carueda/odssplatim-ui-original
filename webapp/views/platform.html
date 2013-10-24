@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <h3>Platform options</h3>
+</div>
+<div class="modal-body">
+    <form name="form" class="css-form" novalidate>
+
+        Select the platforms to be included in the timeline:
+        <br/>
+        <br/>
+
+        <input type="radio" ng-model="platformOptions.selection" value="tokens"/> Only platforms having tokens
+        <br/>
+        <input type="radio" ng-model="platformOptions.selection" value="all"/> Include all platforms
+        <br/>
+        <input type="radio" ng-model="platformOptions.selection" value="types"/> Only platforms of these types:
+        <br/>
+
+        <div>
+            <ul>
+                <li ng-repeat="pt in platformOptions.platformTypes">
+                    <input type="checkbox" ng-model="platformOptions.selectedTypes[pt]"
+                           value="platformOptions.selectedTypes[pt]"/>
+                    {{pt}}
+                </li>
+            </ul>
+        </div>
+
+        <!--<pre>platformOptions: {{platformOptions | json}}</pre>-->
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="set()"
+            ng-disabled="isUnchanged()">Set</button>
+    <button class="btn btn-primary" ng-click="reset()"
+            ng-disabled="isUnchanged()">Reset</button>
+    <button class="btn" ng-click="cancel()">Cancel</button>
+</div>
