@@ -7,11 +7,19 @@ var model = {
     platforms: [],
     timelines: [],
 
-    platformOptions:       {
-        platformTypes:   ["foo", "baz"],
+    platformOptions: {
+        platformTypes:   [],
         selection:      "tokens",
         selectedTypes:  {}
     }
+};
+
+model.getSelectedTypes = function() {
+    var platformTypes = model.platformOptions.platformTypes;
+    var selectedTypes = model.platformOptions.selectedTypes;
+    var selected = _.filter(platformTypes,
+                            function (pt) { return selectedTypes[pt]; });
+    return selected;
 };
 
 model.refresh = function(fns) {

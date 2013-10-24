@@ -4,10 +4,10 @@
 
 
 angular.module('odssPlatimApp.services', [])
-    .factory('service', ['platimModel', function(platimModel) {
+    .factory('service', ['$rootScope', function($rootScope) {
         var service = {
-            refresh: function(platformOptions) {
-                console.log("SERVICE:", platformOptions);
+            platformOptionsUpdated: function() {
+                $rootScope.$broadcast('platformOptionsUpdated');
             }
         };
         return service;

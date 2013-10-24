@@ -2,8 +2,8 @@
 
 angular.module('odssPlatimApp.controllers.platform', [])
 
-    .controller('PlatformCtrl', ['$scope', '$modal', 'platimModel',
-        function ($scope, $modal, platimModel) {
+    .controller('PlatformCtrl', ['$scope', '$modal', 'platimModel', 'service',
+        function ($scope, $modal, platimModel, service) {
 
             $scope.open = function () {
 
@@ -22,7 +22,7 @@ angular.module('odssPlatimApp.controllers.platform', [])
 
                 modalInstance.result.then(function (platformOptions) {
                     platimModel.platformOptions = $scope.platformOptions = platformOptions;
-                    console.log("xx platformOptions:", platformOptions);
+                    service.platformOptionsUpdated();
                 }, function () {
                     console.log('Platform dialog dismissed');
                 });
@@ -30,30 +30,14 @@ angular.module('odssPlatimApp.controllers.platform', [])
 
         }])
 
-    .controller('PlatformInstanceCtrl', ['$scope', '$modalInstance', 'platformOptions', 'service',
-        function ($scope, $modalInstance, platformOptions, service) {
+    .controller('PlatformInstanceCtrl', ['$scope', '$modalInstance', 'platformOptions',
+        function ($scope, $modalInstance, platformOptions) {
 
             $scope.master          = angular.copy(platformOptions);
             $scope.platformOptions = angular.copy(platformOptions);
 
             $scope.set = function() {
                 $scope.master = angular.copy($scope.platformOptions);
-
-                service.refresh($scope.master);
-
-//                if ($scope.master.selection === "all") {
-//                    odssPlatimApp.getAllPlatforms();
-//                }
-//                else if ($scope.master.selection === "tokens") {
-//                    // TODO
-//                    odssPlatimApp.refresh();
-//                }
-//                else {
-//                    // TODO
-//                    console.log("TODO: show platforms with selected types",
-//                                $scope.master.selectedTypes);
-//                }
-
                 $modalInstance.close($scope.master);
             };
 
