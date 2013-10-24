@@ -6,8 +6,7 @@
 
         byPlat:    {},
 
-        platforms: [],
-        timelines: [],
+        platform_ids: [],
 
         platformOptions: {
             platformTypes:   [],
@@ -54,7 +53,7 @@
 
     /**
      * Start the full refresh of the model (except options)
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     model.refresh = function(fns) {
         getAllPlatforms(fns);
@@ -62,7 +61,7 @@
 
     /**
      * Retrieves all platform.
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var getAllPlatforms = function(fns) {
         pstatus("Retrieving platforms...");
@@ -75,7 +74,6 @@
                 success();
                 console.log("getAllPlatforms: " + JSON.stringify(res));
 
-                model.platforms = [];
                 _.each(res, function(elm) {
                     var platform_id = elm.id;
                     var tml = _.extend({
@@ -83,8 +81,6 @@
                         platform_name: elm.name
                     }, elm);
                     tml = _.omit(tml, 'id', 'name');
-
-                    model.platforms.push(tml);
 
                     if (!_.contains(model.platformOptions.platformTypes, tml.typeName)) {
                         model.platformOptions.platformTypes.push(tml.typeName)
@@ -94,7 +90,7 @@
                     model.byPlat[platform_id] = tml;
                 });
 
-                fns.gotPlatforms(model.platforms);
+                fns.gotPlatforms(_.values(model.byPlat));
                 getHolidays(fns);
             },
 
@@ -106,7 +102,7 @@
 
     /**
      * Retrieves the holidays.
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var getHolidays = function(fns) {
         console.log("Calling url = " + odssplatimConfig.rest + "/periods/holidays");
@@ -135,7 +131,7 @@
 
     /**
      * Retrieves the timelines (ie., platforms having tokens).
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var refreshTimelines = function(fns) {
         console.log("Calling url = " + odssplatimConfig.rest + "/timelines");
@@ -147,7 +143,7 @@
             success: function(res) {
                 success();
 
-                model.timelines = [];
+                model.platform_ids = [];
                 _.each(res, function(elm) {
                     var platform_id = elm.id;
                     var tml = _.extend({
@@ -155,13 +151,15 @@
                         platform_name: elm.name
                     }, elm);
                     tml = _.omit(tml, 'id', 'name');
-                    model.timelines.push(tml);
 
                     tml.tokens = [];
                     model.byPlat[platform_id] = tml;
+
+                    model.platform_ids.push(platform_id);
                 });
 
-                fns.gotTimelines(model.timelines);
+                var platforms_with_tokens = _.pick(model.byPlat, model.platform_ids);
+                fns.gotTimelines(platforms_with_tokens);
 
                 putTokens(fns);
             },
@@ -174,10 +172,11 @@
 
     /**
      * Retrieves the tokens for the platforms having tokens.
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var putTokens = function(fns) {
-        _.each(model.timelines, function(tml) {
+        var platforms_with_tokens = _.pick(model.byPlat, model.platform_ids);
+        _.each(platforms_with_tokens, function(tml) {
             var platform_id   = tml.platform_id;
             var platform_name = tml.platform_name;
             //console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
@@ -204,7 +203,7 @@
 
     /**
      * Retrieves the defined periods.
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var refreshPeriods = function(fns) {
         console.log("Calling url = " + odssplatimConfig.rest + "/periods");
@@ -226,7 +225,7 @@
 
     /**
      * Retrieves the default period.
-     * @param fns  Callback functions during various steps
+     * @param fns  Callback functions
      */
     var getDefaultPeriodId = function(fns) {
         console.log("Calling url = " + odssplatimConfig.rest + "/periods/default");
