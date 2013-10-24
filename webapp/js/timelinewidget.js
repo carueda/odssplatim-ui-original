@@ -135,8 +135,7 @@ function TimelineWidget(container, tokenForm) {
     function platformClicked(platform_id) {
         var platform_name = groups[platform_id].tml.platform_name;
 
-        console.log("platformClicked= '" + platform_id + "' " +
-                "platform_name = '" + platform_name+ "'");
+        //console.log("platformClicked= '" + platform_id + "' " + "platform_name = '" + platform_name+ "'");
 
         if (window.location.toString().match(/.*\?debug/)) {
             $("#logarea").html(tablify(groups[platform_id].tml));

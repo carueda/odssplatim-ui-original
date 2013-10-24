@@ -16,7 +16,7 @@ angular.module('odssPlatimApp.controllers.main', [])
 
         $scope.holidays = undefined;
         var gotHolidays = function(res) {
-            console.log("gotHolidays: " + JSON.stringify(res));
+            //console.log("gotHolidays: " + JSON.stringify(res));
             $scope.holidays = res && res.holidays;
             $scope.$digest();
         };
@@ -31,7 +31,7 @@ angular.module('odssPlatimApp.controllers.main', [])
         $scope.periods = {};
 
         var gotPeriods = function(res) {
-            console.log("gotPeriods: " + JSON.stringify(res));
+            //console.log("gotPeriods: " + JSON.stringify(res));
             $scope.periods = {};
             _.each(res, function(per) {
                 $scope.periods[per.id] = per;

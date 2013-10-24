@@ -72,7 +72,7 @@
 
             success: function(res) {
                 success();
-                console.log("getAllPlatforms: " + JSON.stringify(res));
+                //console.log("getAllPlatforms: " + JSON.stringify(res));
 
                 _.each(res, function(elm) {
                     var platform_id = elm.id;
@@ -189,7 +189,7 @@
                 success: function(tokens) {
                     success();
                     model.byPlat[platform_id].tokens = tokens;
-                    console.log("tokens added to " + tml.platform_name+ ": " +tokens.length);
+                    //console.log("tokens added to " + tml.platform_name+ ": " +tokens.length);
                     fns.gotTokens(tml, tokens);
                 },
 
