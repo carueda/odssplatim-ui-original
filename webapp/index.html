@@ -22,31 +22,43 @@
     <script src='vendor/links/datehighlight.js' charset="utf-8"></script>
     <script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
-    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
-    <script src='js/controllers.js' charset="utf-8"></script>
-    <script src='js/model.js' charset="utf-8"></script>
-
     <script src='js/config.js' charset="utf-8"></script>
     <script src='js/common.js' charset="utf-8"></script>
+    <script src='js/timelinewidget.js' charset="utf-8"></script>
     <script src='js/tokenform.js' charset="utf-8"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src='js/services.js' charset="utf-8"></script>
+    <script src='js/controllers/platform.js' charset="utf-8"></script>
+    <script src='js/controllers/main.js' charset="utf-8"></script>
+    <script src='js/model.js' charset="utf-8"></script>
+    <script src='js/ngapp.js' charset="utf-8"></script>
+
+<!--
     <script src='js/periodform.js' charset="utf-8"></script>
     <script src='js/platformform.js' charset="utf-8"></script>
-    <script src='js/timelinewidget.js' charset="utf-8"></script>
     <script src='js/app.js' charset="utf-8"></script>
+-->
 
 </head>
 
 <body>
 
-<div>
-    <div ng-controller="PlatformCtrl">
-        <button class="btn" ng-click="open()">Platform</button>
-    </div>
-    <br/>
+<div ng-controller="MainCtrl">
+    <button class="btn" ng-click="refresh()">Refresh</button>
+    <button ng-controller="PlatformCtrl" class="btn" ng-click="open()">Platform</button>
+
+<!--
+    <br/>periods: <pre>{{periods | json}}</pre>
+    <br/>defaultPeriodId: {{defaultPeriodId}}
+    <br/>holidays: {{holidays}}
+-->
+
 </div>
 
 
+<!--
 <div style="text-align:left">
     <button class="graybutton" id="refresh"
             title="Reloads the timeline (discarding all unsaved changes, if any)">Refresh</button>
@@ -59,6 +71,7 @@
     </button>
     <span>Last edit on ___ by ___</span>
 </div>
+-->
 
 
 <div id="timelines"></div>
@@ -78,6 +91,7 @@
 
 
 <!-- --------------------------------------------------------- !-->
+<!--
 <div id="token-form" title="Token">
     <form>
         <fieldset>
@@ -152,8 +166,10 @@
         </fieldset>
     </form>
 </div>
+-->
 
 <!-- --------------------------------------------------------- !-->
+<!--
 <div id="platform-form" title="Platform">
     <form>
         <fieldset>
@@ -167,20 +183,20 @@
 
                 </tr>
 
-                <!--<tr id="newPlaformSection">-->
-                    <!--<td colspan="2">-->
-                        <!--<div>-->
-                            <!--<br/><br/>-->
-                            <!--<hr/>-->
-                            <!--To create a new platform or remove an existing platform from-->
-                            <!--the database, enter its ID and click Add or Delete.-->
-                        <!--</div>-->
-                        <!--<br/>-->
-                        <!--<label for="platformField">Platform ID:</label>-->
-                        <!--<input id="platformField" size="50"/>-->
-                    <!--</td>-->
+                &lt;!&ndash;<tr id="newPlaformSection">&ndash;&gt;
+                    &lt;!&ndash;<td colspan="2">&ndash;&gt;
+                        &lt;!&ndash;<div>&ndash;&gt;
+                            &lt;!&ndash;<br/><br/>&ndash;&gt;
+                            &lt;!&ndash;<hr/>&ndash;&gt;
+                            &lt;!&ndash;To create a new platform or remove an existing platform from&ndash;&gt;
+                            &lt;!&ndash;the database, enter its ID and click Add or Delete.&ndash;&gt;
+                        &lt;!&ndash;</div>&ndash;&gt;
+                        &lt;!&ndash;<br/>&ndash;&gt;
+                        &lt;!&ndash;<label for="platformField">Platform ID:</label>&ndash;&gt;
+                        &lt;!&ndash;<input id="platformField" size="50"/>&ndash;&gt;
+                    &lt;!&ndash;</td>&ndash;&gt;
 
-                <!--</tr>-->
+                &lt;!&ndash;</tr>&ndash;&gt;
 
                 </tbody>
             </table>
@@ -188,9 +204,11 @@
         </fieldset>
     </form>
 </div>
+-->
 
 
 <!-- --------------------------------------------------------- !-->
+<!--
 <div id="period-form" title="Period">
     <form>
         <fieldset>
@@ -268,6 +286,7 @@
         </fieldset>
     </form>
 </div>
+-->
 
 
 </body>
