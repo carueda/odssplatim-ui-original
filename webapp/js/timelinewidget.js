@@ -79,7 +79,7 @@ function TimelineWidget(container, tokenForm) {
     this.reinit = function(holidays) {
         self.timeline.deleteAllItems();
         data.lenght = 0;
-        groups.length = 0;
+        groups = {};
         if (self.dc !== undefined) {
             self.dc.destroy();
         }
