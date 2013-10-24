@@ -4,6 +4,8 @@
 
 var model = {
 
+    byPlat:    {},
+
     platforms: [],
     timelines: [],
 
@@ -20,6 +22,32 @@ model.getSelectedTypes = function() {
     var selected = _.filter(platformTypes,
                             function (pt) { return selectedTypes[pt]; });
     return selected;
+};
+
+/**
+ * Gets the platforms selected according to the platform options.
+ * @returns {*}
+ */
+model.getSelectedPlatforms = function() {
+    var selection = model.platformOptions.selection;
+    var platforms = _.values(model.byPlat);
+
+    if (selection === "all") {
+        return platforms;
+    }
+    else if (selection === "types") {
+        var selected = model.getSelectedTypes();
+        console.log("showing platforms with selected types", selected);
+        return _.filter(platforms, function(tml) {
+                        return _.indexOf(selected, tml.typeName) >= 0; });
+    }
+    else if (selection === "tokens") {
+        return _.filter(platforms, function(tml) {
+                        return tml.tokens.length > 0; });
+    }
+    else {
+        throw new Error("unexpected selection value: " +selection);
+    }
 };
 
 model.refresh = function(fns) {
@@ -39,8 +67,9 @@ var getAllPlatforms = function(fns) {
 
             model.platforms = [];
             _.each(res, function(elm) {
+                var platform_id = elm.id;
                 var tml = _.extend({
-                    platform_id:   elm.id,
+                    platform_id:   platform_id,
                     platform_name: elm.name
                 }, elm);
                 tml = _.omit(tml, 'id', 'name');
@@ -50,6 +79,9 @@ var getAllPlatforms = function(fns) {
                 if (!_.contains(model.platformOptions.platformTypes, tml.typeName)) {
                     model.platformOptions.platformTypes.push(tml.typeName)
                 }
+
+                tml.tokens = [];
+                model.byPlat[platform_id] = tml;
             });
 
             fns.gotPlatforms(model.platforms);
@@ -100,12 +132,16 @@ var refreshTimelines = function(fns) {
 
             model.timelines = [];
             _.each(res, function(elm) {
+                var platform_id = elm.id;
                 var tml = _.extend({
-                    platform_id:   elm.id,
+                    platform_id:   platform_id,
                     platform_name: elm.name
                 }, elm);
                 tml = _.omit(tml, 'id', 'name');
                 model.timelines.push(tml);
+
+                tml.tokens = [];
+                model.byPlat[platform_id] = tml;
             });
 
             fns.gotTimelines(model.timelines);
@@ -130,9 +166,11 @@ var putTokens = function(fns) {
             type:      "GET",
             dataType:  "json",
 
-            success: function(res) {
+            success: function(tokens) {
                 success();
-                fns.gotTokens(tml, res);
+                model.byPlat[platform_id].tokens = tokens;
+                console.log("tokens added to " + tml.platform_name+ ": " +tokens.length);
+                fns.gotTokens(tml, tokens);
             },
 
             error: function (xhr, ajaxOptions, thrownError) {
@@ -172,11 +210,13 @@ var getDefaultPeriodId = function(fns) {
         success: function(res) {
             success();
             fns.gotDefaultPeriodId(res);
+            fns.refreshComplete();
         },
         error: function (xhr, ajaxOptions, thrownError) {
             if (xhr.status == 404) {
                 success();
                 fns.gotDefaultPeriodId();
+                fns.refreshComplete();
             }
             else {
                 perror("error: " + thrownError);

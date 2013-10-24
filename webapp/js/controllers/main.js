@@ -11,13 +11,7 @@ angular.module('odssPlatimApp.controllers.main', [])
         timelineWidget.draw();
 
         var gotPlatforms = function(platforms) {
-            console.log("gotPlatforms: ", platforms);
-//                _.each(platforms, function(tml) {
-//                    timelineWidget.addGroup(tml);
-//                    timelineWidget.redraw();
-//                });
-//                timelineWidget.redraw();
-            $scope.$digest();
+            //console.log("gotPlatforms: ", platforms);
         };
 
         $scope.holidays = undefined;
@@ -28,35 +22,10 @@ angular.module('odssPlatimApp.controllers.main', [])
         };
 
         var gotTimelines = function(timelines) {
-            //console.log("gotTimelines = " + JSON.stringify(timelines));
-
-            timelineWidget.reinit($scope.holidays);
-            $scope.timelines = timelines;
-            _.each(timelines, function(tml) {
-                timelineWidget.addGroup(tml);
-            });
-            timelineWidget.redraw();
+            //console.log("gotTimelines: ", timelines);
         };
 
         var gotTokens = function(tml, tokens) {
-            var platform_id   = tml.platform_id;
-            var platform_name = tml.platform_name;
-
-            if (tokens.length == 0) {
-                return;
-            }
-//                console.log("got tokens for " + platform_name + " (" +platform_id+ ")"
-//                    , tokens
-//                );
-
-            _.each(tokens, function(token) {
-                token.platform_name  = platform_name;
-                token.status         = "status_saved";
-                timelineWidget.addToken(token);
-            });
-
-//                setVisibleChartRange();
-            timelineWidget.redraw();
         };
 
         $scope.periods = {};
@@ -68,7 +37,6 @@ angular.module('odssPlatimApp.controllers.main', [])
                 $scope.periods[per.id] = per;
             });
             $scope.$digest();
-            //console.log("periods: " + JSON.stringify(periods));
         };
 
         $scope.defaultPeriodId = "?";
@@ -99,7 +67,9 @@ angular.module('odssPlatimApp.controllers.main', [])
             }
         }
 
-
+        /**
+         * Triggers the refresh of the model.
+         */
         $scope.refresh = function() {
             perror();
             $("#logarea").html("");
@@ -112,48 +82,33 @@ angular.module('odssPlatimApp.controllers.main', [])
                 gotTokens:            gotTokens,
                 gotPeriods:           gotPeriods,
                 gotDefaultPeriodId:   gotDefaultPeriodId,
-                gotHolidays:          gotHolidays
+                gotHolidays:          gotHolidays,
+                refreshComplete:      platformOptionsUpdated
             });
         };
 
+        /**
+         * Inserts a timeline (a platform and its tokens) in the widget.
+         * @param tml
+         */
+        var insertTimeline = function(tml) {
+            timelineWidget.addGroup(tml);
+            _.each(tml.tokens, function(token) {
+                timelineWidget.addToken(token);
+            });
+        };
+
+        /**
+         * Called to reflect the selection options in the widget.
+         */
         var platformOptionsUpdated = function() {
-            var platformOptions = platimModel.platformOptions;
-            var selection = platformOptions.selection;
+            var selectedPlatforms = platimModel.getSelectedPlatforms();
             timelineWidget.reinit($scope.holidays);
-
-            var platforms = platimModel.platforms;
-
-            if (selection === "all") {
-                _.each(platforms, function(tml) {
-                    timelineWidget.addGroup(tml);
-                });
-            }
-            else if (selection === "types") {
-                var selected = platimModel.getSelectedTypes();
-                console.log("showing platforms with selected types", selected);
-                _.each(platforms, function(tml) {
-                    if (_.indexOf(selected, tml.typeName) >= 0) {
-                        timelineWidget.addGroup(tml);
-                    }
-                });
-            }
-            else if (selection === "tokens") {
-                console.log("show platforms with tokens");
-                _.each(platimModel.timelines, function(tml) {
-                    timelineWidget.addGroup(tml);
-                });
-            }
-            else {
-                throw new Error("unexpected selection value: " +selection);
-            }
-
+            _.each(selectedPlatforms, insertTimeline);
             timelineWidget.redraw();
         };
 
-        $scope.$on('platformOptionsUpdated', function() {
-            console.log("MainCtrl: platformOptionsUpdated:", platimModel.platformOptions);
-            platformOptionsUpdated();
-        });
+        $scope.$on('platformOptionsUpdated', platformOptionsUpdated);
     }])
 
 ;
