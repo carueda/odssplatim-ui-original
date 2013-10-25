@@ -1,7 +1,5 @@
 'use strict';
 
-(function() {
-
 angular.module('odssPlatimApp.controllers.main', [])
 
     .controller('MainCtrl', ['$scope', 'platimModel', function ($scope, platimModel) {
@@ -112,7 +110,3 @@ angular.module('odssPlatimApp.controllers.main', [])
     }])
 
 ;
-
-
-})();
-

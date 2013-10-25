@@ -5,11 +5,10 @@
 
 angular.module('odssPlatimApp.services', [])
     .factory('service', ['$rootScope', function($rootScope) {
-        var service = {
+        return {
             platformOptionsUpdated: function() {
                 $rootScope.$broadcast('platformOptionsUpdated');
             }
         };
-        return service;
     }])
 ;
