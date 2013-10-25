@@ -13,6 +13,44 @@
         </textarea>
         <br/>
 
+        <table>
+            <tr>
+                <td>
+                    Start:
+                </td>
+                <td>
+                    End:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" ng-model="token.start">
+                </td>
+                <td>
+                    <input type="text" ng-model="token.end">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="well well-small pull-left" ng-model="token.start">
+                        <datepicker show-weeks="false"></datepicker>
+                    </div>
+                </td>
+                <td>
+                    <div class="well well-small pull-left" ng-model="token.end">
+                        <datepicker show-weeks="false"></datepicker>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+<!--
+        <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="token.start"
+               is-open="opened"
+               datepicker-options="dateOptions"
+               ng-required="true" />
+        <button class="btn" ng-click="openStartDate()"><i class="icon-calendar"></i></button>
+-->
     </form>
 </div>
 <div class="modal-footer">

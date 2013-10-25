@@ -2,19 +2,34 @@
 
 angular.module('odssPlatimApp.controllers.token', [])
 
-    .controller('TokenCtrl', ['$scope', '$modal', 'platimModel', 'service',
-        function ($scope, $modal, platimModel, service) {
+    .controller('TokenCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
+        function ($scope, $modal, $timeout, platimModel, service) {
+
+              $scope.dateOptions = {
+                'year-format': "'yy'",
+                'starting-day': 1
+              };
+
+            $scope.openStartDate = function() {
+                $timeout(function() {
+                    $scope.opened = true;
+                });
+            };
 
             $scope.token = {
                 platform_name:   "TIMELINE",
                 state:           "STATE",
-                description:     "foo bar blah blah"
+                description:     "foo bar blah blah",
+                start:           new Date(),
+                end:             new Date(new Date().getTime() + 10*24*60*1000)
             };
 
             $scope.$on('editToken', function(event, token) {
                 console.log("TokenCtrl.editToken:", token);
-                $scope.token = token;
-                $scope.open();
+                $scope.$apply(function() {
+                    $scope.token = token;
+                    $scope.open();
+                });
             });
 
             $scope.open = function () {

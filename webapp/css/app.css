@@ -6,10 +6,12 @@ html, body{
     /*overflow: hidden;*/
 }
 
+/*
 body {
     font-size: 8pt;
     font-family: verdana, sans, arial, sans-serif;
 }
+*/
 input.text {
     margin-bottom:12px;  padding: .4em; font-size: 10px;
     /*width: 160px;*/
@@ -233,4 +235,9 @@ div.timeline-axis-grid-weekends {
 }
 div.timeline-axis-grid-holiday {
     background-color: #e9fff5;
+}
+
+
+.modal {
+    width: 740px;
 }
