@@ -2,43 +2,65 @@
     <h3>Token on timeline for platform {{token.platform_name}}</h3>
 </div>
 <div class="modal-body">
+    <!-- TODO: move customized styles to app.css -->
+
     <form name="form" class="css-form" novalidate>
-
-        State:
-        <input type="text" ng-model="token.state">
-        <br/>
-
-        Description:
-        <textarea rows="3" cols="100" ng-model="token.description">
-        </textarea>
-        <br/>
+        <table>
+            <tr>
+                <td>
+                    <label class="text">
+                        State:
+                        <input type="text" style="width:100px;"
+                               ng-model="token.state">
+                    </label>
+                </td>
+                <td>
+                    <label class="textarea">
+                        Description:
+                        <textarea rows="2" style="width:400px;"
+                                  ng-model="token.description">
+                        </textarea>
+                    </label>
+                </td>
+            </tr>
+        </table>
 
         <table>
             <tr>
                 <td>
-                    Start:
+                    Start: {{token.start | date:'medium'}}
                 </td>
                 <td>
-                    End:
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="text" ng-model="token.start">
-                </td>
-                <td>
-                    <input type="text" ng-model="token.end">
+                    End: {{token.end | date:'medium'}}
                 </td>
             </tr>
             <tr>
                 <td>
                     <div class="well well-small pull-left" ng-model="token.start">
-                        <datepicker show-weeks="false"></datepicker>
+                        <datepicker show-weeks="false" max="token.end">
+                        </datepicker>
                     </div>
                 </td>
                 <td>
                     <div class="well well-small pull-left" ng-model="token.end">
-                        <datepicker show-weeks="false"></datepicker>
+                        <datepicker show-weeks="false" min="token.start">
+                        </datepicker>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div ng-model="token.start" class="well well-small"
+                         style="margin-left: auto; margin-right: auto;width: 11em">
+                        <timepicker show-meridian="false">
+                        </timepicker>
+                    </div>
+                </td>
+                <td>
+                    <div ng-model="token.end" class="well well-small"
+                         style="margin-left: auto; margin-right: auto;width: 11em">
+                        <timepicker show-meridian="false">
+                        </timepicker>
                     </div>
                 </td>
             </tr>
