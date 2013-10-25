@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <h3>Period: {{info.selectedPeriod.name}}</h3>
+</div>
+<div class="modal-body">
+
+    <form name="form" class="css-form" novalidate>
+
+        <select ng-model="info.selectedPeriod"
+                ng-options="v as v.name for v in info.periods"
+                ng-init="info.selectedPeriod = info.periods[0]"
+                ng-change="change()"
+                style="width:300px;">
+        </select>
+        <!--<br/>selectedPeriod: <pre>{{info.selectedPeriod | json}}</pre>-->
+        <!--<br/>periods: <pre>{{info.periods | json}}</pre>-->
+
+        <table>
+            <tr>
+                <td>
+                    Start: {{info.selectedPeriod.start | date:'medium'}}
+                </td>
+                <td>
+                    End: {{info.selectedPeriod.end | date:'medium'}}
+                </td>
+            </tr>
+            <tr style="vertical-align: top">
+                <td>
+                    <div class="well well-small pull-left" ng-model="info.selectedPeriod.start">
+                        <datepicker show-weeks="false" max="info.selectedPeriod.end">
+                        </datepicker>
+                    </div>
+                </td>
+                <td>
+                    <div class="well well-small pull-left" ng-model="info.selectedPeriod.end">
+                        <datepicker show-weeks="false" min="info.selectedPeriod.start">
+                        </datepicker>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="set()"
+            ng-disabled="isUnchanged()"
+            >Apply</button>
+    <button class="btn" ng-click="cancel()">Cancel</button>
+</div>

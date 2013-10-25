@@ -6,7 +6,7 @@
 
     <form name="form" class="css-form" novalidate>
         <table>
-            <tr>
+            <tr style="vertical-align: top;">
                 <td>
                     <label class="text">
                         State:
@@ -34,7 +34,7 @@
                     End: {{token.end | date:'medium'}}
                 </td>
             </tr>
-            <tr>
+            <tr style="vertical-align: top">
                 <td>
                     <div class="well well-small pull-left" ng-model="token.start">
                         <datepicker show-weeks="false" max="token.end">
@@ -48,7 +48,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr style="vertical-align: top">
                 <td>
                     <div ng-model="token.start" class="well well-small"
                          style="margin-left: auto; margin-right: auto;width: 11em">

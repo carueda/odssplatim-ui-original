@@ -12,7 +12,11 @@
             platformTypes:   [],
             selection:      "tokens",
             selectedTypes:  {}
-        }
+        },
+
+        holidays: [],
+        periods: [],
+        defaultPeriodId: undefined
     };
 
     /**

@@ -14,7 +14,7 @@ angular.module('odssPlatimApp.controllers.main', [])
                                    "platform_id", "platform_name",
                                    "start", "end",
                                    "status");
-                token.description = "PENDING description";
+                token.description = "(pending)";
                 console.log("showForm: token=", token);
 
                 service.editToken(token);
@@ -32,6 +32,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             //console.log("gotHolidays: " + JSON.stringify(res));
             $scope.holidays = res && res.holidays;
             //$scope.$digest();
+            platimModel.holidays = $scope.holidays;
         };
 
         var gotTimelines = function(timelines) {
@@ -50,6 +51,7 @@ angular.module('odssPlatimApp.controllers.main', [])
                 $scope.periods[per.id] = per;
             });
             //$scope.$digest();
+            platimModel.periods = $scope.periods;
         };
 
         $scope.defaultPeriodId = "?";
@@ -60,6 +62,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             setVisibleChartRange();
             timelineWidget.redraw();
             //$scope.$digest();
+            platimModel.defaultPeriodId = $scope.defaultPeriodId;
         };
 
         function setVisibleChartRange() {
