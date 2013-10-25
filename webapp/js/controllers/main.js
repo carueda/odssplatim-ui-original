@@ -2,7 +2,7 @@
 
 angular.module('odssPlatimApp.controllers.main', [])
 
-    .controller('MainCtrl', ['$scope', 'platimModel', function ($scope, platimModel) {
+    .controller('MainCtrl', ['$scope', 'platimModel', 'service', function ($scope, platimModel, service) {
 
         var tokenForm      = new TokenForm(window.odssPlatimApp);
         var timelineWidget = new TimelineWidget($("#timelines")[0], tokenForm);
@@ -16,7 +16,7 @@ angular.module('odssPlatimApp.controllers.main', [])
         var gotHolidays = function(res) {
             //console.log("gotHolidays: " + JSON.stringify(res));
             $scope.holidays = res && res.holidays;
-            $scope.$digest();
+            //$scope.$digest();
         };
 
         var gotTimelines = function(timelines) {
@@ -34,7 +34,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             _.each(res, function(per) {
                 $scope.periods[per.id] = per;
             });
-            $scope.$digest();
+            //$scope.$digest();
         };
 
         $scope.defaultPeriodId = "?";
@@ -44,7 +44,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             $scope.defaultPeriodId = res && res.defaultPeriodId;
             setVisibleChartRange();
             timelineWidget.redraw();
-            $scope.$digest();
+            //$scope.$digest();
         };
 
         function setVisibleChartRange() {
@@ -74,7 +74,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             console.log("refreshing...");
             pprogress("refreshing...");
             timelineWidget.reinit();
-            platimModel.refresh({
+            service.refresh({
                 gotPlatforms:         gotPlatforms,
                 gotTimelines:         gotTimelines,
                 gotTokens:            gotTokens,
