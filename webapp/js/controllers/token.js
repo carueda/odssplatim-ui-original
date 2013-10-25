@@ -5,21 +5,10 @@ angular.module('odssPlatimApp.controllers.token', [])
     .controller('TokenCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
         function ($scope, $modal, $timeout, platimModel, service) {
 
-              $scope.dateOptions = {
-                'year-format': "'yy'",
-                'starting-day': 1
-              };
-
-            $scope.openStartDate = function() {
-                $timeout(function() {
-                    $scope.opened = true;
-                });
-            };
-
-            $scope.token = {
-                platform_name:   "TIMELINE",
-                state:           "STATE",
-                description:     "foo bar blah blah",
+            $scope.token = { // TODO remove this temporary def for testing
+                platform_name:   "some_plat",
+                state:           "some_state",
+                description:     "",
                 start:           new Date(),
                 end:             new Date(new Date().getTime() + 10*24*60*1000)
             };
