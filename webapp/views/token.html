@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h3>Token on timeline for platform {{token.platform_name}}</h3>
+</div>
+<div class="modal-body">
+    <form name="form" class="css-form" novalidate>
+
+        State:
+        <input type="text" ng-model="token.state">
+        <br/>
+
+        Description:
+        <textarea rows="3" cols="100" ng-model="token.description">
+        </textarea>
+        <br/>
+
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="set()"
+            ng-disabled="isUnchanged() || !isValid()">Apply</button>
+    <button class="btn btn-primary" ng-click="reset()"
+            ng-disabled="isUnchanged() || !isValid()">Reset</button>
+    <button class="btn btn-warning" ng-click="delete()"
+            >Delete</button>
+    <button class="btn" ng-click="cancel()">Cancel</button>
+</div>

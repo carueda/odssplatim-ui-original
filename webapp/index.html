@@ -31,6 +31,7 @@
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
     <script src='js/services.js' charset="utf-8"></script>
     <script src='js/controllers/platform.js' charset="utf-8"></script>
+    <script src='js/controllers/token.js' charset="utf-8"></script>
     <script src='js/controllers/main.js' charset="utf-8"></script>
     <script src='js/model.js' charset="utf-8"></script>
     <script src='js/ngapp.js' charset="utf-8"></script>
@@ -49,11 +50,8 @@
     <button class="btn" ng-click="refresh()">Refresh</button>
     <button ng-controller="PlatformCtrl" class="btn" ng-click="open()">Platform</button>
 
-<!--
-    <br/>periods: <pre>{{periods | json}}</pre>
-    <br/>defaultPeriodId: {{defaultPeriodId}}
-    <br/>holidays: {{holidays}}
--->
+    <!-- temporary -->
+    <button ng-controller="TokenCtrl" class="btn btn-inverse" ng-click="open()">Token</button>
 
 </div>
 

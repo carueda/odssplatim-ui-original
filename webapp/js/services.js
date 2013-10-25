@@ -190,11 +190,16 @@ angular.module('odssPlatimApp.services', [])
         };
 
         return {
+            refresh: refresh,
+
             platformOptionsUpdated: function() {
                 $rootScope.$broadcast('platformOptionsUpdated');
             },
 
-            refresh: refresh
+            editToken: function(token) {
+                $rootScope.$broadcast('editToken', token);
+            }
+
         };
     }])
 ;
