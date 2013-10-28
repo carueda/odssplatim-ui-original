@@ -27,10 +27,11 @@
 
         <table>
             <tr>
-                <td>
+                <td style="text-align: center">
                     Start: {{token.start | date:'medium'}}
                 </td>
-                <td>
+                <td></td>
+                <td style="text-align: center">
                     End: {{token.end | date:'medium'}}
                 </td>
             </tr>
@@ -40,6 +41,9 @@
                         <datepicker show-weeks="false" max="token.end">
                         </datepicker>
                     </div>
+                </td>
+                <td style="vertical-align: middle">
+                    <i class="icon-arrow-right"></i>
                 </td>
                 <td>
                     <div class="well well-small pull-left" ng-model="token.end">
@@ -56,6 +60,7 @@
                         </timepicker>
                     </div>
                 </td>
+                <td></td>
                 <td>
                     <div ng-model="token.end" class="well well-small"
                          style="margin-left: auto; margin-right: auto;width: 11em">

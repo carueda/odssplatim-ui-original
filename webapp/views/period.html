@@ -25,6 +25,7 @@
                 <td style="text-align: center">
                     Start: {{info.selectedPeriod.start | date:'yyyy-MM-dd'}}
                 </td>
+                <td></td>
                 <td style="text-align: center">
                     End: {{info.selectedPeriod.end | date:'yyyy-MM-dd'}}
                 </td>
@@ -35,6 +36,9 @@
                         <datepicker show-weeks="false" max="info.selectedPeriod.end">
                         </datepicker>
                     </div>
+                </td>
+                <td style="vertical-align: middle">
+                    <i class="icon-arrow-right"></i>
                 </td>
                 <td>
                     <div class="well well-small pull-left" ng-model="info.selectedPeriod.end">
