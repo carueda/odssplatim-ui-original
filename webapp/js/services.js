@@ -189,6 +189,23 @@ angular.module('odssPlatimApp.services', [])
                 });
         };
 
+        /**
+         * Sets the default period.
+         */
+        var setDefaultPeriodId = function(id) {
+            var url = odssplatimConfig.rest + "/periods/default/" + id;
+            console.log("PUT " + url);
+            $http.put(url)
+                .success(function(res, status, headers, config) {
+                    success();
+                    platimModel.selectedPeriodId = id;
+                })
+
+                .error(function(data, status, headers, config) {
+                    perror("error: " + status);
+                });
+        };
+
         return {
             refresh: refresh,
 
@@ -202,7 +219,9 @@ angular.module('odssPlatimApp.services', [])
 
             periodSelected: function() {
                 $rootScope.$broadcast('periodSelected');
-            }
+            },
+
+            setDefaultPeriodId: setDefaultPeriodId
 
         };
     }])

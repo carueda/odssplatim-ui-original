@@ -22,8 +22,8 @@ angular.module('odssPlatimApp.controllers.period', [])
 
         }])
 
-    .controller('PeriodInstanceCtrl', ['$scope', '$modalInstance', 'platimModel',
-        function ($scope, $modalInstance, platimModel) {
+    .controller('PeriodInstanceCtrl', ['$scope', '$modalInstance', 'platimModel', 'service',
+        function ($scope, $modalInstance, platimModel, service) {
 
             var periods_plus_create = platimModel.periods;
             periods_plus_create["!"] = {
@@ -61,6 +61,9 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             $scope.setDefault = function() {
                 console.log("setDefault:", $scope.info.selectedPeriod);
+                service.setDefaultPeriodId($scope.info.selectedPeriod.id);
+                // and set this period, and close dialog:
+                $scope.set();
             };
 
             $scope.delete = function() {
