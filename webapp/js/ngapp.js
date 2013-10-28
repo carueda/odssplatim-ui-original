@@ -2,6 +2,7 @@
 
 angular.module('odssPlatimApp', [
     'ui.bootstrap',
+    'odssPlatimApp.timelineWidget',
     'odssPlatimApp.model',
     'odssPlatimApp.controllers.platform',
     'odssPlatimApp.controllers.token',

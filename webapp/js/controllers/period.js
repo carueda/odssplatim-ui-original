@@ -22,8 +22,8 @@ angular.module('odssPlatimApp.controllers.period', [])
 
         }])
 
-    .controller('PeriodInstanceCtrl', ['$scope', '$modalInstance', 'platimModel', 'service',
-        function ($scope, $modalInstance, platimModel, service) {
+    .controller('PeriodInstanceCtrl', ['$scope', '$modalInstance', 'platimModel', 'service', 'timelineWidget',
+        function ($scope, $modalInstance, platimModel, service, timelineWidget) {
 
             var periods_plus_create = platimModel.periods;
             periods_plus_create["--all tokens--"] = {
@@ -32,11 +32,13 @@ angular.module('odssPlatimApp.controllers.period', [])
                start:  undefined,
                end:    undefined
             };
+
+            var dr = timelineWidget.getVisibleChartRange();
             periods_plus_create["--create period--"] = {
                id:     "--create period--",
                name:   "--create period--",
-               start:  moment().toDate(),
-               end:    moment().toDate()
+               start:  moment(dr.start).format("YYYY-MM-DD"),
+               end:    moment(dr.end).format("YYYY-MM-DD")
             };
 
             var selectedPeriod;
