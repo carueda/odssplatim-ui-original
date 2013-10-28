@@ -147,20 +147,21 @@ function TimelineWidget(container, tokenForm) {
         //console.log("addToken: " + JSON.stringify(token));
 
         var body = {
+            'token_id':       token.id,
+            'platform_id':    token.platform_id,
+            'platform_name':  token.platform_name,
+            'state':          token.state,
+            'description':    token.description,
             'start':          parseDate(token.start),
             'end':            parseDate(token.end),
             'content':        getTokenContent(token),
             'group':          formattedGroup(token.platform_id),
             'className':      token.status + " " + "block-body",
 
-            'token_id':       token.id,
-            'platform_id':    token.platform_id,
-            'platform_name':  token.platform_name,
-            'state':          token.state,
             'status':         token.status
         };
 
-        //console.log("addToken: body= " + JSON.stringify(body));
+        console.log("addToken: body= " + JSON.stringify(body));
 
         data.push(body);
     };

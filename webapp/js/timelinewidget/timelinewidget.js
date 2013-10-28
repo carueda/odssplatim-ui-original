@@ -6,16 +6,8 @@ angular.module('odssPlatimApp.timelineWidget', [])
         var tokenForm = {
             showForm: function(args) {
                 console.log("showForm: args=", args);
-
-                var token = _.pick(args.tokenInfo,
-                                   "token_id",
-                                   "state",
-                                   "description",
-                                   "platform_id", "platform_name",
-                                   "start", "end",
-                                   "status");
+                var token = args.tokenInfo;
                 console.log("showForm: token=", token);
-
                 service.editToken(token);
             }
         };

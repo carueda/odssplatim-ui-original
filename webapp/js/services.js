@@ -133,6 +133,11 @@ angular.module('odssPlatimApp.services', [])
                 $http.get(url)
                     .success(function(tokens, status, headers, config) {
                         success();
+                        _.each(tokens, function(token) {
+                            token.token_id      = token.id;
+                            token.platform_name = platform_name;
+                            token.status        = "status_saved";
+                        });
                         platimModel.byPlat[platform_id].tokens = tokens;
                         console.log("tokens added to " + tml.platform_name+ ":", tokens);
                         fns.gotTokens(tml, tokens);
