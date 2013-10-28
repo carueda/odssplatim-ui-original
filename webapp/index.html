@@ -88,8 +88,15 @@
 <div id="error" style="color: red">
 </div>
 
+<div ng-controller="MainCtrl" ng-show="debug">
+    <div id="logarea" style="color: blue; background-color: #f8fff7">
+    </div>
 
-<div id="logarea" style="color: blue; background-color: #f8fff7">
+    <button class="btn btn-mini"
+            ng-click="debug.collapsed = !debug.collapsed">Model</button>
+    <div collapse="debug.collapsed">
+        <pre>{{debug.model | json}}</pre>
+    </div>
 </div>
 
 
