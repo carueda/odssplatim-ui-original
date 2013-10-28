@@ -59,7 +59,7 @@
 
     <button ng-show="!isCreating()"
             class="btn btn-warning" ng-click="delete()"
-            ng-disabled="isCreating()"
+            ng-disabled="cannotDelete()"
             >Delete</button>
 
     <button ng-show="isCreating()"

@@ -62,7 +62,10 @@ angular.module('odssPlatimApp.controllers.main', [])
 
         function setVisibleChartRange() {
             var selectedPeriod = platimModel.getSelectedPeriod();
-            if (selectedPeriod !== undefined) {
+            if (selectedPeriod !== undefined
+                && selectedPeriod.start !== undefined
+                && selectedPeriod.end !== undefined
+                ) {
                 var start = selectedPeriod.start;
                 var end   = selectedPeriod.end;
                 timelineWidget.setVisibleChartRange(moment(start).add("d", -1),
@@ -71,6 +74,7 @@ angular.module('odssPlatimApp.controllers.main', [])
             else {
                 timelineWidget.adjustVisibleChartRange();
             }
+            timelineWidget.redraw();
         }
 
         /**

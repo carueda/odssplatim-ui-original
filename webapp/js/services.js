@@ -193,12 +193,48 @@ angular.module('odssPlatimApp.services', [])
          * Sets the default period.
          */
         var setDefaultPeriodId = function(id) {
-            var url = odssplatimConfig.rest + "/periods/default/" + id;
-            console.log("PUT " + url);
-            $http.put(url)
+            var url;
+            if (id === undefined) {
+                url = odssplatimConfig.rest + "/periods/default";
+                console.log("DELETE " + url);
+                $http.delete(url)
+                    .success(function(res, status, headers, config) {
+                        success();
+                        platimModel.selectedPeriodId = undefined;
+                    })
+
+                    .error(function(data, status, headers, config) {
+                        perror("error: " + status);
+                    });
+            }
+            else {
+                url = odssplatimConfig.rest + "/periods/default/" + id;
+                console.log("PUT " + url);
+                $http.put(url)
+                    .success(function(res, status, headers, config) {
+                        success();
+                        platimModel.selectedPeriodId = id;
+                    })
+
+                    .error(function(data, status, headers, config) {
+                        perror("error: " + status);
+                    });
+            }
+        };
+
+        /**
+         * Removes the given period from the database.
+         */
+        var removePeriod = function(id) {
+            var url = odssplatimConfig.rest + "/periods/" + id;
+            console.log("DELETE " + url);
+            $http.delete(url)
                 .success(function(res, status, headers, config) {
                     success();
-                    platimModel.selectedPeriodId = id;
+                    delete platimModel.periods[id];
+                    if (platimModel.selectedPeriodId === id) {
+                        platimModel.selectedPeriodId = undefined;
+                    }
                 })
 
                 .error(function(data, status, headers, config) {
@@ -221,7 +257,13 @@ angular.module('odssPlatimApp.services', [])
                 $rootScope.$broadcast('periodSelected');
             },
 
-            setDefaultPeriodId: setDefaultPeriodId
+            setDefaultPeriodId: setDefaultPeriodId,
+            removePeriod: removePeriod,
+
+            confirm: function(info) {
+                console.log("service: confirm: ", info);
+                $rootScope.$broadcast('confirm', info);
+            }
 
         };
     }])
