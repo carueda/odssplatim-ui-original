@@ -198,6 +198,10 @@ angular.module('odssPlatimApp.services', [])
 
             editToken: function(token) {
                 $rootScope.$broadcast('editToken', token);
+            },
+
+            periodSelected: function() {
+                $rootScope.$broadcast('periodSelected');
             }
 
         };

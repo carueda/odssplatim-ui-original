@@ -7,20 +7,26 @@
 
         <select ng-model="info.selectedPeriod"
                 ng-options="v as v.name for v in info.periods"
-                ng-init="info.selectedPeriod = info.periods[0]"
                 ng-change="change()"
-                style="width:300px;">
+                id="period-select">
         </select>
         <!--<br/>selectedPeriod: <pre>{{info.selectedPeriod | json}}</pre>-->
         <!--<br/>periods: <pre>{{info.periods | json}}</pre>-->
 
+        <div ng-show="isCreating()">
+            <label class="text">
+                Name for the new period:
+                <input type="text" ng-model="info.newName" required>
+            </label>
+        </div>
+
         <table>
             <tr>
-                <td>
-                    Start: {{info.selectedPeriod.start | date:'medium'}}
+                <td style="text-align: center">
+                    Start: {{info.selectedPeriod.start | date:'yyyy-MM-dd'}}
                 </td>
-                <td>
-                    End: {{info.selectedPeriod.end | date:'medium'}}
+                <td style="text-align: center">
+                    End: {{info.selectedPeriod.end | date:'yyyy-MM-dd'}}
                 </td>
             </tr>
             <tr style="vertical-align: top">
@@ -41,8 +47,25 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="set()"
+    <button ng-show="!isCreating()"
+            class="btn btn-primary" ng-click="set()"
             ng-disabled="isUnchanged()"
             >Apply</button>
+
+    <button ng-show="!isCreating()"
+            class="btn btn-primary" ng-click="setDefault()"
+            ng-disabled="isCreating()"
+            >Set default</button>
+
+    <button ng-show="!isCreating()"
+            class="btn btn-warning" ng-click="delete()"
+            ng-disabled="isCreating()"
+            >Delete</button>
+
+    <button ng-show="isCreating()"
+            class="btn btn-primary" ng-click="create()"
+            ng-disabled="isInvalid()"
+            >Create</button>
+
     <button class="btn" ng-click="cancel()">Cancel</button>
 </div>

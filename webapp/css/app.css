@@ -241,3 +241,7 @@ div.timeline-axis-grid-holiday {
 .modal {
     width: 700px;
 }
+
+#period-select {
+    width: 600px;
+}

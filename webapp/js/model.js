@@ -15,8 +15,8 @@
         },
 
         holidays: [],
-        periods: [],
-        defaultPeriodId: undefined
+        periods: {},
+        selectedPeriodId: undefined
     };
 
     /**
@@ -52,6 +52,17 @@
         }
         else {
             throw new Error("unexpected selection value: " +selection);
+        }
+    };
+
+    /**
+     * Gets the currently selected period, if any.
+     */
+    model.getSelectedPeriod = function() {
+        if (model.selectedPeriodId)
+            return model.periods[model.selectedPeriodId];
+        else {
+            return undefined;
         }
     };
 

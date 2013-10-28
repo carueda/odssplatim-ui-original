@@ -54,27 +54,17 @@ angular.module('odssPlatimApp.controllers.main', [])
             platimModel.periods = $scope.periods;
         };
 
-        $scope.defaultPeriodId = "?";
-
         var gotDefaultPeriodId = function(res) {
-            //console.log("gotDefaultPeriodId: " + JSON.stringify(res));
-            $scope.defaultPeriodId = res && res.defaultPeriodId;
+            platimModel.selectedPeriodId = res.defaultPeriodId;
             setVisibleChartRange();
             timelineWidget.redraw();
-            //$scope.$digest();
-            platimModel.defaultPeriodId = $scope.defaultPeriodId;
         };
 
         function setVisibleChartRange() {
-            //console.log("setVisibleChartRange: ", $scope.defaultPeriodId);
-            var defaultPeriod = null;
-            if ($scope.defaultPeriodId !== undefined) {
-                defaultPeriod = $scope.periods[$scope.defaultPeriodId];
-            }
-
-            if (defaultPeriod) {
-                var start = defaultPeriod.start;
-                var end   = defaultPeriod.end;
+            var selectedPeriod = platimModel.getSelectedPeriod();
+            if (selectedPeriod !== undefined) {
+                var start = selectedPeriod.start;
+                var end   = selectedPeriod.end;
                 timelineWidget.setVisibleChartRange(moment(start).add("d", -1),
                                                     moment(end).  add("d", +1));
             }
@@ -125,6 +115,7 @@ angular.module('odssPlatimApp.controllers.main', [])
         };
 
         $scope.$on('platformOptionsUpdated', platformOptionsUpdated);
-    }])
 
+        $scope.$on('periodSelected', setVisibleChartRange);
+    }])
 ;
