@@ -37,8 +37,8 @@ angular.module('odssPlatimApp.controllers.period', [])
             periods_plus_create["--create period--"] = {
                id:     "--create period--",
                name:   "--create period--",
-               start:  moment(dr.start).format("YYYY-MM-DD"),
-               end:    moment(dr.end).format("YYYY-MM-DD")
+               start:  moment(dr.start).toDate(),
+               end:    moment(dr.end).toDate()
             };
 
             var selectedPeriod;
