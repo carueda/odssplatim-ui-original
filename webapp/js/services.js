@@ -242,6 +242,38 @@ angular.module('odssPlatimApp.services', [])
                 });
         };
 
+        /**
+         * Adds a period to the database.
+         */
+        var addPeriod = function(newPeriodInfo, successFn) {
+            console.log("addPeriod:", newPeriodInfo);
+            pstatus("saving new period '" +newPeriodInfo.name+ "'");
+            var url = odssplatimConfig.rest + "/periods";
+            console.log("POST " + url);
+
+            /* note: currently, back-end service expects data as parameters,
+             * not as json payload.
+             */
+            var params = $.param(newPeriodInfo);
+            $http({
+                method:  'POST',
+                url:     url,
+                data:    params,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+                .success(function(res, status, headers, config) {
+                    success();
+                    platimModel.periods[res.id] = res;
+                    platimModel.selectedPeriodId = res.id;
+                    successFn();
+                })
+
+                .error(function(data, status, headers, config) {
+                    console.log("error: ", data, status, headers, config);
+                    perror("error: " +status);
+                });
+        };
+
         return {
             refresh: refresh,
 
@@ -257,8 +289,9 @@ angular.module('odssPlatimApp.services', [])
                 $rootScope.$broadcast('periodSelected');
             },
 
-            setDefaultPeriodId: setDefaultPeriodId,
-            removePeriod: removePeriod,
+            setDefaultPeriodId:  setDefaultPeriodId,
+            addPeriod:           addPeriod,
+            removePeriod:        removePeriod,
 
             confirm: function(info) {
                 console.log("service: confirm: ", info);
