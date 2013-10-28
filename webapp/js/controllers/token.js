@@ -14,6 +14,15 @@ angular.module('odssPlatimApp.controllers.token', [])
             };
 
             $scope.$on('editToken', function(event, token) {
+
+                var platform = platimModel.byPlat[token.platform_id];
+                token.platform_name = platform.platform_name;
+                console.log("TokenCtrl.editToken:", token);
+                _.each(platform.tokens, function(tok) {
+                   if (tok.id === token.token_id) {
+                        token.description = tok.description;
+                   }
+                });
                 console.log("TokenCtrl.editToken:", token);
                 $scope.$apply(function() {
                     $scope.token = token;

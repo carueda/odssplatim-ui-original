@@ -9,12 +9,8 @@ angular.module('odssPlatimApp.controllers.main', [])
             //console.log("gotPlatforms: ", platforms);
         };
 
-        $scope.holidays = undefined;
         var gotHolidays = function(res) {
-            //console.log("gotHolidays: " + JSON.stringify(res));
-            $scope.holidays = res && res.holidays;
-            //$scope.$digest();
-            platimModel.holidays = $scope.holidays;
+            //console.log("gotHolidays: ", res);
         };
 
         var gotTimelines = function(timelines) {
@@ -26,18 +22,11 @@ angular.module('odssPlatimApp.controllers.main', [])
 
         $scope.periods = {};
 
-        var gotPeriods = function(res) {
-            //console.log("gotPeriods: " + JSON.stringify(res));
-            $scope.periods = {};
-            _.each(res, function(per) {
-                $scope.periods[per.id] = per;
-            });
-            //$scope.$digest();
-            platimModel.periods = $scope.periods;
+        var gotPeriods = function(periods) {
+            //console.log("gotPeriods:", periods);
         };
 
-        var gotDefaultPeriodId = function(res) {
-            platimModel.selectedPeriodId = res.defaultPeriodId;
+        var gotDefaultPeriodId = function() {
             setVisibleChartRange();
             timelineWidget.redraw();
         };
@@ -95,7 +84,7 @@ angular.module('odssPlatimApp.controllers.main', [])
          */
         var platformOptionsUpdated = function() {
             var selectedPlatforms = platimModel.getSelectedPlatforms();
-            timelineWidget.reinit($scope.holidays);
+            timelineWidget.reinit(platimModel.holidays);
             _.each(selectedPlatforms, insertTimeline);
             timelineWidget.redraw();
         };

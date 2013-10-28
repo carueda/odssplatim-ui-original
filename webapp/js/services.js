@@ -63,6 +63,7 @@ angular.module('odssPlatimApp.services', [])
             $http.get(url)
                 .success(function(res, status, headers, config) {
                     success();
+                    platimModel.holidays = res.holidays;
                     fns.gotHolidays(res);
                     refreshTimelines(fns);
                 })
@@ -133,7 +134,7 @@ angular.module('odssPlatimApp.services', [])
                     .success(function(tokens, status, headers, config) {
                         success();
                         platimModel.byPlat[platform_id].tokens = tokens;
-                        //console.log("tokens added to " + tml.platform_name+ ": " +tokens.length);
+                        console.log("tokens added to " + tml.platform_name+ ":", tokens);
                         fns.gotTokens(tml, tokens);
                     })
 
@@ -154,7 +155,11 @@ angular.module('odssPlatimApp.services', [])
             $http.get(url)
                 .success(function(res, status, headers, config) {
                     success();
-                    fns.gotPeriods(res);
+                    platimModel.periods = {};
+                    _.each(res, function(per) {
+                        platimModel.periods[per.id] = per;
+                    });
+                    fns.gotPeriods(platimModel.periods);
                     getDefaultPeriodId(fns);
                 })
 
@@ -173,7 +178,8 @@ angular.module('odssPlatimApp.services', [])
             $http.get(url)
                 .success(function(res, status, headers, config) {
                     success();
-                    fns.gotDefaultPeriodId(res);
+                    platimModel.selectedPeriodId = res.defaultPeriodId;
+                    fns.gotDefaultPeriodId();
                     fns.refreshComplete();
                 })
 
