@@ -51,10 +51,12 @@
 <body>
 
 <div ng-controller="MainCtrl">
-    <button class="btn" ng-click="refresh()">Refresh</button>
-    <button ng-controller="PlatformCtrl" class="btn" ng-click="open()">Platform</button>
-    <button ng-controller="PeriodCtrl" class="btn" ng-click="open()">Period</button>
-    <button class="btn" ng-click="save()">Save</button>
+    <div class="btn-group">
+    <button class="btn btn-small" ng-click="refresh()">Refresh</button>
+    <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()">Platform</button>
+    <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()">Period</button>
+    <button class="btn btn-small" ng-click="save()">Save</button>
+    </div>
 </div>
 
 
