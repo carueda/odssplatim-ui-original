@@ -6,7 +6,7 @@ angular.module('odssPlatimApp.controllers.main', [])
     function ($scope, platimModel, service, timelineWidget) {
 
         $scope.debug = window.location.toString().match(/.*\?debug/)
-            ? { collapsed: false, model: platimModel }
+            ? { collapsed: true, model: platimModel }
             : undefined;
 
         var gotPlatforms = function(platforms) {

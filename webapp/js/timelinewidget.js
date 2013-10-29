@@ -161,7 +161,7 @@ function TimelineWidget(container, tokenForm) {
             'status':         token.status
         };
 
-        console.log("addToken: body= " + JSON.stringify(body));
+        //console.log("addToken: body= " + JSON.stringify(body));
 
         data.push(body);
     };
@@ -269,7 +269,10 @@ function TimelineWidget(container, tokenForm) {
         self.timeline.redraw();
     };
 
-    function updateStatusModified(index, tokenInfo) {
+    self.updateStatusModified = function(index, tokenInfo) {
+        if (tokenInfo === undefined) {
+            tokenInfo = data[index];
+        }
         if (tokenInfo.status === "status_new") {
             return;
         }
@@ -283,7 +286,7 @@ function TimelineWidget(container, tokenForm) {
             self.updateStatus(index, tokenInfo, tokenInfo.status + "_modified");
         }
         console.log("modified status set to: " + tokenInfo.status);
-    }
+    };
 
     this.removeToken = function(tokenInfo, index, row) {
         self.timeline.deleteItem(row);

@@ -139,7 +139,7 @@ angular.module('odssPlatimApp.services', [])
                             token.status        = "status_saved";
                         });
                         platimModel.byPlat[platform_id].tokens = tokens;
-                        console.log("tokens added to " + tml.platform_name+ ":", tokens);
+                        //console.log("tokens added to " + tml.platform_name+ ":", tokens);
                         fns.gotTokens(tml, tokens);
                     })
 
@@ -292,8 +292,8 @@ angular.module('odssPlatimApp.services', [])
                 $rootScope.$broadcast('platformOptionsUpdated');
             },
 
-            editToken: function(token) {
-                $rootScope.$broadcast('editToken', token);
+            editToken: function(token, row) {
+                $rootScope.$broadcast('editToken', token, row);
             },
 
             periodSelected: function() {
