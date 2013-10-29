@@ -325,8 +325,16 @@ angular.module('odssPlatimApp.services', [])
                 pprogress("saving new token ...");
 
                 url = odssplatimConfig.rest + "/tokens";
-                $http.post(url, item)
-                    .success(function(res, status, headers, config) {
+                /* note: currently, back-end service expects data as parameters,
+                 * not as json payload. */
+                var params = $.param(item);
+                $http({
+                    method:  'POST',
+                    url:     url,
+                    data:    params,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                })
+                    .success(function(data, status, headers, config) {
                         success();
                         tokenInfo.token_id = data.id;
                         successFn(index, tokenInfo);

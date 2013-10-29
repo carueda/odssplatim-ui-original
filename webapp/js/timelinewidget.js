@@ -251,7 +251,7 @@ function TimelineWidget(container, tokenForm) {
             tokenInfo.start = bodyBlock.start;
             tokenInfo.end   = bodyBlock.end;
 
-            updateStatusModified(index, tokenInfo);
+            self.updateStatusModified(index, tokenInfo);
 
             self.redraw();
         };
@@ -319,7 +319,7 @@ function TimelineWidget(container, tokenForm) {
                         if (modified) {
                             tokenInfo.status = "status_modified";
                             tokenInfo.className = "block-body"  + " " + tokenInfo.status;
-                            //updateStatusModified(index, tokenInfo);
+                            //self.updateStatusModified(index, tokenInfo);
                         }
                     }
 
