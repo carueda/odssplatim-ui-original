@@ -72,7 +72,7 @@
         </table>
     </form>
 </div>
-<div class="modal-footer">
+<div class="modal-footer" ng-controller="UtilCtrl">
     <button class="btn btn-primary" ng-click="set()"
             ng-disabled="isUnchanged() || !isValid()">Apply</button>
     <button class="btn btn-primary" ng-click="reset()"

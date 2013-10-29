@@ -50,7 +50,7 @@
         </table>
     </form>
 </div>
-<div class="modal-footer">
+<div class="modal-footer" ng-controller="UtilCtrl">
     <button ng-show="!isCreating()"
             class="btn btn-primary" ng-click="set()"
             ng-disabled="isUnchanged()"
