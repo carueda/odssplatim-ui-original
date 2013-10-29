@@ -1,13 +1,29 @@
 'use strict';
 
-angular.module('odssPlatimApp.controllers.token', [])
+angular.module('odssPlatimApp.controllers.timeline', [])
 
-    .controller('TokenCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
+    .factory('timelineWidget', ['service', function(service) {
+        var tokenForm = {
+            showForm: function(args) {
+                console.log("showForm: args=", args);
+                var token = args.tokenInfo;
+                console.log("showForm: token=", token);
+                service.editToken(token);
+            }
+        };
+        var timelineWidget = new TimelineWidget($("#timelines")[0], tokenForm);
+        timelineWidget.draw();
+
+        return timelineWidget;
+    }])
+
+    .controller('TimelineCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
         function ($scope, $modal, $timeout, platimModel, service) {
 
             $scope.token = undefined;
 
             $scope.$on('editToken', function(event, token) {
+                console.log('editToken:', token);
                 $scope.$apply(function() {
                     $scope.token = token;
                     $scope.open();
