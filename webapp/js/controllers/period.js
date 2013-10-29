@@ -80,7 +80,7 @@ angular.module('odssPlatimApp.controllers.period', [])
                     start: moment($scope.info.selectedPeriod.start).format("YYYY-MM-DD"),
                     end:   moment($scope.info.selectedPeriod.end).  format("YYYY-MM-DD")
                 };
-                $modalInstance.dismiss('period created');
+                $modalInstance.dismiss('create period');
                 service.addPeriod(newPeriodInfo, function() {
                     service.periodSelected();
                 });
@@ -105,7 +105,7 @@ angular.module('odssPlatimApp.controllers.period', [])
                     title:     "Remove period '" + periodInfo.name + "'?",
                     message:   "Remove period '" + periodInfo.name + "' from the database?",
                     ok:        function() {
-                        $modalInstance.dismiss('period deleted');
+                        $modalInstance.dismiss('delete period');
                         service.removePeriod(periodInfo.id);
                     }
                 });
