@@ -285,6 +285,60 @@ angular.module('odssPlatimApp.services', [])
                 });
         };
 
+        /**
+         * Adds or updates the given token.
+         */
+        var saveToken = function(tokenInfo, index, successFn) {
+            var url;
+            console.log("saveToken: tokenInfo=" + JSON.stringify(tokenInfo));
+
+            var item = {
+                platform_id:   strip(tokenInfo.platform_id),
+                start:         unparseDate(tokenInfo.start),
+                end:           unparseDate(tokenInfo.end),
+                state:         tokenInfo.state,
+                description:   tokenInfo.description
+            };
+
+            if (tokenInfo.token_id !== undefined) {
+                // update existing token:
+                console.log("saveToken: updating token_id=" +tokenInfo.token_id+
+                            ": " +JSON.stringify(item));
+                pprogress("saving token update ...");
+
+                url = odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id;
+                $http.put(url, item)
+                    .success(function(res, status, headers, config) {
+                        success();
+                        successFn(index, tokenInfo);
+                        console.log("token updated:", tokenInfo);
+                    })
+
+                    .error(function(data, status, headers, config) {
+                        console.log("error: ", data, status, headers, config);
+                        perror("error: " +status);
+                    });
+            }
+            else {
+                // add new token
+                console.log("saveToken: posting new token " + JSON.stringify(item));
+                pprogress("saving new token ...");
+
+                url = odssplatimConfig.rest + "/tokens";
+                $http.post(url, item)
+                    .success(function(res, status, headers, config) {
+                        success();
+                        tokenInfo.token_id = data.id;
+                        successFn(index, tokenInfo);
+                        console.log("token posted:", tokenInfo);
+                    })
+                    .error(function(data, status, headers, config) {
+                        console.log("error: ", data, status, headers, config);
+                        perror("error: " +status);
+                    });
+            }
+        };
+
         return {
             refresh: refresh,
 
@@ -295,6 +349,8 @@ angular.module('odssPlatimApp.services', [])
             editToken: function(token, row) {
                 $rootScope.$broadcast('editToken', token, row);
             },
+
+            saveToken: saveToken,
 
             periodSelected: function() {
                 $rootScope.$broadcast('periodSelected');

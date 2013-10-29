@@ -96,5 +96,48 @@ angular.module('odssPlatimApp.controllers.main', [])
         $scope.$on('platformOptionsUpdated', platformOptionsUpdated);
 
         $scope.$on('periodSelected', setVisibleChartRange);
+
+        /**
+         * Saves the modified tokens in the timeline.
+         */
+        $scope.save = function() {
+
+            function isNewOrModifiedToken(tokenInfo) {
+                var res = tokenInfo.status !== undefined &&
+                         (tokenInfo.status === "status_new" ||
+                          tokenInfo.status.indexOf("_modified") >= 0);
+                return res;
+            }
+
+            function isOkToBeSaved(tokenInfo) {
+                var res = tokenInfo.status !== undefined &&
+                          tokenInfo.state !== undefined &&
+                          tokenInfo.state.trim() !== "";
+                return res;
+            }
+
+            perror();
+            pprogress("saving...");
+
+            var skipped = 0;
+            _.each(timelineWidget.data, function(tokenInfo, index) {
+                if (isNewOrModifiedToken(tokenInfo)) {
+                    if (isOkToBeSaved(tokenInfo)) {
+                        service.saveToken(tokenInfo, index, function(index, tokenInfo) {
+                            timelineWidget.updateStatus(index, tokenInfo, "status_saved");
+                        });
+                    }
+                    else {
+                        skipped += 1;
+                    }
+                }
+            });
+            if (skipped > 0) {
+                var msg = skipped + " token(s) skipped because of missing info";
+                console.log(msg);
+                pstatus(msg);
+            }
+        };
+
     }])
 ;
