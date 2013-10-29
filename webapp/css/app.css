@@ -244,6 +244,9 @@ div.timeline-axis-grid-holiday {
 .modal {
     width: 700px;
 }
+.modal-backdrop, .modal-backdrop.fade.in {
+    opacity: 0.5;
+}
 
 #period-select {
     width: 600px;

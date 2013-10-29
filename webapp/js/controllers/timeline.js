@@ -37,7 +37,8 @@ angular.module('odssPlatimApp.controllers.timeline', [])
 
                 var modalInstance = $modal.open({
                     templateUrl: 'views/token.html',
-                    controller: 'TokenInstanceCtrl',
+                    controller:  'TokenInstanceCtrl',
+                    backdrop:    'static',
                     resolve: {
                         info: function () {
                             return $scope.info;
