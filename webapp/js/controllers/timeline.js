@@ -20,14 +20,15 @@ angular.module('odssPlatimApp.controllers.timeline', [])
     .controller('TimelineCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service', 'timelineWidget',
         function ($scope, $modal, $timeout, platimModel, service, timelineWidget) {
 
-            $scope.token = undefined;
-            var row;
-
-            $scope.$on('editToken', function(event, token, _row) {
+            $scope.info = {
+                token: undefined,
+                row: undefined
+            };
+            $scope.$on('editToken', function(event, token, row) {
                 console.log('editToken:', token);
                 $scope.$apply(function() {
-                    row = _row;
-                    $scope.token = token;
+                    $scope.info.token = token;
+                    $scope.info.row = row;
                     $scope.open();
                 });
             });
@@ -38,13 +39,14 @@ angular.module('odssPlatimApp.controllers.timeline', [])
                     templateUrl: 'views/token.html',
                     controller: 'TokenInstanceCtrl',
                     resolve: {
-                        token: function () {
-                            return $scope.token;
+                        info: function () {
+                            return $scope.info;
                         }
                     }
                 });
 
                 modalInstance.result.then(function (token) {
+                    var row = $scope.info.row;
                     console.log('Token dialog accepted:', token, "row=", row);
 
                     var platform = platimModel.byPlat[token.platform_id];
@@ -72,15 +74,39 @@ angular.module('odssPlatimApp.controllers.timeline', [])
 
         }])
 
-    .controller('TokenInstanceCtrl', ['$scope', '$modalInstance', 'token',
-        function ($scope, $modalInstance, token) {
+    .controller('TokenInstanceCtrl', ['$scope', '$modalInstance', 'info', 'service', 'timelineWidget',
+        function ($scope, $modalInstance, info, service, timelineWidget) {
 
-            $scope.master = angular.copy(token);
-            $scope.token  = angular.copy(token);
+            $scope.master = angular.copy(info.token);
+            $scope.token  = angular.copy(info.token);
 
             $scope.set = function() {
                 $scope.master = angular.copy($scope.token);
                 $modalInstance.close($scope.master);
+            };
+
+            $scope.delete = function() {
+                console.log("delete:", info);
+                if (info.token.token_id === undefined) {
+                    // not in database; just remove token from timeline
+                    timelineWidget.removeToken(info.token, info.row, info.row);
+                    timelineWidget.redraw();
+                    $modalInstance.dismiss('delete token');
+                    return;
+                }
+
+                service.confirm({
+                    title:     "Confirm deletion",
+                    message:   "Token '" + info.token.state+ "' will be deleted." +
+                               "<br/><br/>" +
+                               "(timeline: " + "'" + info.token.platform_name + "')",
+                    ok: function() {
+                        $modalInstance.dismiss('delete token');
+                        service.deleteToken(info.token, info.row, function(tokenInfo, index) {
+                            timelineWidget.removeToken(tokenInfo, index, index);
+                        });
+                    }
+                });
             };
 
             $scope.reset = function() {

@@ -102,8 +102,8 @@ angular.module('odssPlatimApp.controllers.period', [])
 
                 var periodInfo = $scope.info.selectedPeriod;
                 service.confirm({
-                    title:     "Remove period '" + periodInfo.name + "'?",
-                    message:   "Remove period '" + periodInfo.name + "' from the database?",
+                    title:     "Confirm deletion",
+                    message:   "Period '" + periodInfo.name + "' will be deleted.",
                     ok:        function() {
                         $modalInstance.dismiss('delete period');
                         service.removePeriod(periodInfo.id);

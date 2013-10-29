@@ -347,6 +347,28 @@ angular.module('odssPlatimApp.services', [])
             }
         };
 
+        /**
+         * Removes the given token.
+         */
+        var deleteToken = function(tokenInfo, index, successFn) {
+            if (tokenInfo.token_id === undefined) {
+                successFn(tokenInfo, index);
+                return;
+            }
+
+            pprogress("deleting token ...");
+            var url = odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id;
+            console.log("DELETE " + url);
+            $http.delete(url)
+                .success(function(res, status, headers, config) {
+                    success();
+                    successFn(tokenInfo, index);
+                })
+                .error(function(data, status, headers, config) {
+                    perror("error: " + status);
+                });
+        };
+
         return {
             refresh: refresh,
 
@@ -359,6 +381,7 @@ angular.module('odssPlatimApp.services', [])
             },
 
             saveToken: saveToken,
+            deleteToken: deleteToken,
 
             periodSelected: function() {
                 $rootScope.$broadcast('periodSelected');
