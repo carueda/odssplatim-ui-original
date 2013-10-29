@@ -4,6 +4,9 @@ html, body{
     padding: 0;
     height: 100%;
     /*overflow: hidden;*/
+
+    line-height: 1; /* override bootstrap's value of 20px; which makes the
+                     * contents of the tokens to get positioned too low. */
 }
 
 /*
