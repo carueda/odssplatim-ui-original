@@ -2,6 +2,7 @@
 
 angular.module('odssPlatimApp', [
     'ui.bootstrap',
+    'ngSanitize',
     'odssPlatimApp.model',
     'odssPlatimApp.controllers.platform',
     'odssPlatimApp.controllers.timeline',
