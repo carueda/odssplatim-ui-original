@@ -133,13 +133,9 @@ function TimelineWidget(container, tokenForm) {
     };
 
     function platformClicked(platform_id) {
-        var platform_name = groups[platform_id].tml.platform_name;
-
+        //var platform_name = groups[platform_id].tml.platform_name;
         //console.log("platformClicked= '" + platform_id + "' " + "platform_name = '" + platform_name+ "'");
-
-        if (window.location.toString().match(/.*\?debug/)) {
-            $("#logarea").html(tablify(groups[platform_id].tml));
-        }
+        $("#logarea").html(tablify(groups[platform_id].tml));
     }
 
     this.addToken = function(token) {
@@ -354,9 +350,7 @@ function TimelineWidget(container, tokenForm) {
             if (row) {
                 var element = data[row];
 
-                if (window.location.toString().match(/.*\?debug/)) {
-                    $("#logarea").html(tablify(element));
-                }
+                $("#logarea").html(tablify(element));
 
                 console.log("SELECT: row=" + row + ": " + JSON.stringify(element));
                 self.timeline.selectItem(row);
