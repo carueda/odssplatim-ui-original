@@ -14,80 +14,79 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
+    <script src="vendor/jquery/ui/jquery-ui.js"></script>
+    <script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
+    <script src="vendor/moment/moment.js"></script>
+    <script src="vendor/links/timeline.js"></script>
+    <script src='vendor/links/datehighlight.js' charset="utf-8"></script>
+    <script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
+
+    <script src='js/config.js' charset="utf-8"></script>
+    <script src='js/common.js' charset="utf-8"></script>
+    <script src='js/timelinewidget.js' charset="utf-8"></script>
+    <script src='js/tokenform.js' charset="utf-8"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src='js/services.js' charset="utf-8"></script>
+    <script src='js/controllers/platform.js' charset="utf-8"></script>
+    <script src='js/controllers/timeline.js' charset="utf-8"></script>
+    <script src='js/controllers/period.js' charset="utf-8"></script>
+    <script src='js/controllers/util.js' charset="utf-8"></script>
+    <script src='js/controllers/main.js' charset="utf-8"></script>
+    <script src='js/model.js' charset="utf-8"></script>
+    <script src='js/ngapp.js' charset="utf-8"></script>
+
 </head>
 
 <body>
 
-<div ng-controller="MainCtrl">
-    <div class="btn-group">
-    <button class="btn btn-small" ng-click="refresh()"
-            title="Reloads the timeline (discarding all unsaved changes, if any)"
-            >Refresh</button>
-    <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()"
-            title="Platform options"
-            >Platform</button>
-    <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()"
-            title="Allows to visualize a pre-defined period or create a new period"
-            >Period</button>
-    <button class="btn btn-small" ng-click="save()"
-            title="Saves all new and modified tokens"
-            >Save</button>
-    <button class="btn btn-small" ng-show="showVersions" ng-click="showVersions()"
-            title="Revision history"
-            >Versions</button>
-    </div>
-    <span ng-show="currentVersion"
-          title="{{currentVersion.saved}} (by {{currentVersion.author}})"
-          >Last edit {{currentVersion.saved}}</span>
-</div>
-
-
-<div ng-controller="TimelineCtrl" id="timelines"></div>
-
-
-<div style="position:absolute; top:10px; right:0; width:400px;">
-    <div id="status" style="background-color: orange; position:absolute; left:0;">
-    </div>
-</div>
-
-<div id="error" style="color: red">
-</div>
-
-<div ng-controller="MainCtrl" ng-show="debug">
-    <div id="logarea" style="color: blue; background-color: #f8fff7">
+    <div ng-controller="MainCtrl">
+        <div class="btn-group">
+        <button class="btn btn-small" ng-click="refresh()"
+                title="Reloads the timeline (discarding all unsaved changes, if any)"
+                >Refresh</button>
+        <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()"
+                title="Platform options"
+                >Platform</button>
+        <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()"
+                title="Allows to visualize a pre-defined period or create a new period"
+                >Period</button>
+        <button class="btn btn-small" ng-click="save()"
+                title="Saves all new and modified tokens"
+                >Save</button>
+        <button class="btn btn-small" ng-show="showVersions" ng-click="showVersions()"
+                title="Revision history"
+                >Versions</button>
+        </div>
+        <span ng-show="currentVersion"
+              title="{{currentVersion.saved}} (by {{currentVersion.author}})"
+              >Last edit {{currentVersion.saved}}</span>
     </div>
 
-    <button class="btn btn-mini"
-            ng-click="debug.collapsed = !debug.collapsed">Model</button>
-    <div collapse="debug.collapsed">
-        <pre>{{debug.model | json}}</pre>
+    <div ng-controller="TimelineCtrl" id="timelines"></div>
+
+    <div style="position:absolute; top:10px; right:0; width:400px;">
+        <div id="status" style="background-color: orange; position:absolute; left:0;">
+        </div>
     </div>
-</div>
 
-<script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
-<script src="vendor/jquery/ui/jquery-ui.js"></script>
-<script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
-<script src="vendor/moment/moment.js"></script>
-<script src="vendor/links/timeline.js"></script>
-<script src='vendor/links/datehighlight.js' charset="utf-8"></script>
-<script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
+    <div id="error" style="color: red">
+    </div>
 
-<script src='js/config.js' charset="utf-8"></script>
-<script src='js/common.js' charset="utf-8"></script>
-<script src='js/timelinewidget.js' charset="utf-8"></script>
-<script src='js/tokenform.js' charset="utf-8"></script>
+    <div ng-controller="MainCtrl" ng-show="debug">
+        <div id="logarea" style="color: blue; background-color: #f8fff7">
+        </div>
 
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-sanitize.js"></script>
-<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
-<script src='js/services.js' charset="utf-8"></script>
-<script src='js/controllers/platform.js' charset="utf-8"></script>
-<script src='js/controllers/timeline.js' charset="utf-8"></script>
-<script src='js/controllers/period.js' charset="utf-8"></script>
-<script src='js/controllers/util.js' charset="utf-8"></script>
-<script src='js/controllers/main.js' charset="utf-8"></script>
-<script src='js/model.js' charset="utf-8"></script>
-<script src='js/ngapp.js' charset="utf-8"></script>
+        <button class="btn btn-mini"
+                ng-click="debug.collapsed = !debug.collapsed">Model</button>
+        <div collapse="debug.collapsed">
+            <pre>{{debug.model | json}}</pre>
+        </div>
+    </div>
 
 </body>
 </html>
