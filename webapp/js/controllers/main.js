@@ -120,23 +120,48 @@ angular.module('odssPlatimApp.controllers.main', [])
             pprogress("saving...");
 
             var skipped = 0;
+            var toBeSaved = [];
             _.each(timelineWidget.data, function(tokenInfo, index) {
                 if (isNewOrModifiedToken(tokenInfo)) {
                     if (isOkToBeSaved(tokenInfo)) {
-                        service.saveToken(tokenInfo, index, function(index, tokenInfo) {
-                            timelineWidget.updateStatus(index, tokenInfo, "status_saved");
-                        });
+                        toBeSaved.push({tokenInfo: tokenInfo, index: index});
                     }
                     else {
                         skipped += 1;
                     }
                 }
             });
-            if (skipped > 0) {
-                var msg = skipped + " token(s) skipped because of missing info";
-                console.log(msg);
-                pstatus(msg);
+
+            var msg, skippedMsg = skipped > 0
+                           ? " (" +skipped+ " skipped because of missing info)"
+                           : "";
+            if (toBeSaved.length > 0) {
+                msg = "Saving " +toBeSaved.length+ " token(s)" + skippedMsg;
             }
+            else {
+                msg = "No tokens need to be saved" + skippedMsg;
+            }
+            console.log(msg);
+            pstatus(msg);
+
+            /**
+             * Saves the token at the given index ii in the toBeSaved list,
+             * and then recursively calls doList(ii + 1).
+             * @param ii  Index in toBeSaved
+             */
+            function doList(ii) {
+                if (ii >= toBeSaved.length) {
+                    return; // done.
+                }
+                var elm = toBeSaved[ii];
+                var tokenInfo = elm.tokenInfo;
+                var index     = elm.index;
+                service.saveToken(tokenInfo, index, function(index, tokenInfo) {
+                    timelineWidget.updateStatus(index, tokenInfo, "status_saved");
+                    doList(ii + 1);
+                });
+            }
+            doList(0);
         };
 
         $(document).tooltip(); // TODO remove jQ stuff
