@@ -47,9 +47,7 @@ angular.module('odssPlatimApp.services', [])
                     getHolidays(fns);
                 })
 
-                .error(function(data, status, headers, config) {
-                    perror("error: " + status);
-                })
+                .error(httpErrorHandler)
             ;
         };
 
@@ -74,7 +72,7 @@ angular.module('odssPlatimApp.services', [])
                         refreshTimelines(fns);
                     }
                     else {
-                        perror("error: " + status);
+                        httpErrorHandler(data, status, headers, config)
                     }
                 });
         };
@@ -111,9 +109,7 @@ angular.module('odssPlatimApp.services', [])
                     putTokens(fns);
                 })
 
-                .error(function(data, status, headers, config) {
-                    perror("error: " + status);
-                });
+                .error(httpErrorHandler);
         };
 
         /**
@@ -143,9 +139,7 @@ angular.module('odssPlatimApp.services', [])
                         fns.gotTokens(tml, tokens);
                     })
 
-                    .error(function(data, status, headers, config) {
-                        perror("error: " + status);
-                    });
+                    .error(httpErrorHandler);
             });
             refreshPeriods(fns);
         };
@@ -168,9 +162,7 @@ angular.module('odssPlatimApp.services', [])
                     getDefaultPeriodId(fns);
                 })
 
-                .error(function(data, status, headers, config) {
-                    perror("error: " + status);
-                });
+                .error(httpErrorHandler);
         };
 
         /**
@@ -195,7 +187,7 @@ angular.module('odssPlatimApp.services', [])
                         fns.refreshComplete();
                     }
                     else {
-                        perror("error: " + status);
+                        httpErrorHandler(data, status, headers, config)
                     }
                 });
         };
@@ -214,9 +206,7 @@ angular.module('odssPlatimApp.services', [])
                         platimModel.selectedPeriodId = undefined;
                     })
 
-                    .error(function(data, status, headers, config) {
-                        perror("error: " + status);
-                    });
+                    .error(httpErrorHandler);
             }
             else {
                 url = odssplatimConfig.rest + "/periods/default/" + id;
@@ -227,9 +217,7 @@ angular.module('odssPlatimApp.services', [])
                         platimModel.selectedPeriodId = id;
                     })
 
-                    .error(function(data, status, headers, config) {
-                        perror("error: " + status);
-                    });
+                    .error(httpErrorHandler);
             }
         };
 
@@ -248,9 +236,7 @@ angular.module('odssPlatimApp.services', [])
                     }
                 })
 
-                .error(function(data, status, headers, config) {
-                    perror("error: " + status);
-                });
+                .error(httpErrorHandler);
         };
 
         /**
@@ -279,10 +265,7 @@ angular.module('odssPlatimApp.services', [])
                     successFn();
                 })
 
-                .error(function(data, status, headers, config) {
-                    console.log("error: ", data, status, headers, config);
-                    perror("error: " +status);
-                });
+                .error(httpErrorHandler);
         };
 
         /**
@@ -314,10 +297,7 @@ angular.module('odssPlatimApp.services', [])
                         console.log("token updated:", tokenInfo);
                     })
 
-                    .error(function(data, status, headers, config) {
-                        console.log("error: ", data, status, headers, config);
-                        perror("error: " +status);
-                    });
+                    .error(httpErrorHandler);
             }
             else {
                 // add new token
@@ -340,10 +320,7 @@ angular.module('odssPlatimApp.services', [])
                         successFn(index, tokenInfo);
                         console.log("token posted:", tokenInfo);
                     })
-                    .error(function(data, status, headers, config) {
-                        console.log("error: ", data, status, headers, config);
-                        perror("error: " +status);
-                    });
+                    .error(httpErrorHandler);
             }
         };
 
@@ -364,9 +341,16 @@ angular.module('odssPlatimApp.services', [])
                     success();
                     successFn(tokenInfo, index);
                 })
-                .error(function(data, status, headers, config) {
-                    perror("error: " + status);
-                });
+                .error(httpErrorHandler);
+        };
+
+        var httpErrorHandler = function(data, status, headers, config) {
+            var reqMsg = config.method + " '" + config.url + "'";
+            console.log("error in request " +reqMsg+ ":",
+                        "data=", data, "status=", status,
+                        "config=", config);
+            perror("[" + status+ "] An error occured in a request to the " +
+                   "back-end service. Try again in a few moments.");
         };
 
         return {
