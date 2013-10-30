@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="odssPlatimApp">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>ODSS Platform Timeline Editor -- prototype</title>
 
     <link rel="stylesheet" href="vendor/jquery/ui/themes/smoothness/jquery-ui.css" />
+    <link rel='stylesheet' href='vendor/jquery/ui/addon/jquery-ui-timepicker-addon.css'>
+    <link rel='stylesheet' href='vendor/links/timeline.css'>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+    <link rel='stylesheet' href='css/app.css'>
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
-
     <script src="vendor/jquery/ui/jquery-ui.js"></script>
-
     <script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
-    <link rel='stylesheet' type='text/css' href='vendor/jquery/ui/addon/jquery-ui-timepicker-addon.css'>
-
     <script src="vendor/moment/moment.js"></script>
     <script src="vendor/links/timeline.js"></script>
     <script src='vendor/links/datehighlight.js' charset="utf-8"></script>
@@ -20,241 +25,67 @@
 
     <script src='js/config.js' charset="utf-8"></script>
     <script src='js/common.js' charset="utf-8"></script>
-    <script src='js/tokenform.js' charset="utf-8"></script>
-    <script src='js/periodform.js' charset="utf-8"></script>
-    <script src='js/platformform.js' charset="utf-8"></script>
     <script src='js/timelinewidget.js' charset="utf-8"></script>
-    <script src='js/app.js' charset="utf-8"></script>
 
-    <link rel='stylesheet' type='text/css' href='vendor/links/timeline.css'>
-    <link rel='stylesheet' type='text/css' href='css/app.css'>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src='js/services.js' charset="utf-8"></script>
+    <script src='js/controllers/platform.js' charset="utf-8"></script>
+    <script src='js/controllers/timeline.js' charset="utf-8"></script>
+    <script src='js/controllers/period.js' charset="utf-8"></script>
+    <script src='js/controllers/util.js' charset="utf-8"></script>
+    <script src='js/controllers/main.js' charset="utf-8"></script>
+    <script src='js/model.js' charset="utf-8"></script>
+    <script src='js/app.js' charset="utf-8"></script>
 
 </head>
 
 <body>
 
-<div style="text-align:left">
-    <button class="graybutton" id="refresh"
-            title="Reloads the timeline (discarding all unsaved changes, if any)">Refresh</button>
-    <button class="graybutton" id="save" title="Saves all new and modified tokens">Save</button>
-    <button class="graybutton" id="showPlatformForm" title="Platform options">Platform</button>
-    <button class="graybutton" id="selectPeriod"
-            title="Allows to visualize a pre-defined period or create a new period">Period
-    </button>
-    <button class="graybutton" id="versions" title="Revision history">Versions
-    </button>
-    <span>Last edit on ___ by ___</span>
-</div>
-
-
-<div id="timelines"></div>
-
-
-<div style="position:absolute; top:10px; right:0; width:400px;">
-    <div id="status" style="background-color: orange; position:absolute; left:0;">
+    <div ng-controller="MainCtrl">
+        <div class="btn-group">
+        <button class="btn btn-small" ng-click="refresh()"
+                title="Reloads the timeline (discarding all unsaved changes, if any)"
+                >Refresh</button>
+        <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()"
+                title="Platform options"
+                >Platform</button>
+        <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()"
+                title="Allows to visualize a pre-defined period or create a new period"
+                >Period</button>
+        <button class="btn btn-small" ng-click="save()"
+                title="Saves all new and modified tokens"
+                >Save</button>
+        <button class="btn btn-small" ng-show="showVersions" ng-click="showVersions()"
+                title="Revision history"
+                >Versions</button>
+        </div>
+        <span ng-show="currentVersion"
+              title="{{currentVersion.saved}} (by {{currentVersion.author}})"
+              >Last edit {{currentVersion.saved}}</span>
     </div>
-</div>
 
-<div id="error" style="color: red">
-</div>
+    <div ng-controller="TimelineCtrl" id="timelines"></div>
 
+    <div style="position:absolute; top:10px; right:0; width:450px;">
+        <div id="status" style="background-color: orange; position:absolute; left:0;">
+        </div>
+    </div>
 
-<div id="logarea" style="color: blue; background-color: #f8fff7">
-</div>
+    <div id="error" style="color: #CC0000">
+    </div>
 
+    <div ng-controller="MainCtrl" ng-show="debug">
+        <div id="logarea" style="color: blue; background-color: #f8fff7">
+        </div>
 
-<!-- --------------------------------------------------------- !-->
-<div id="token-form" title="Token">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
-
-                    <td colspan="3">
-                        <div style="text-align: center">
-                            <label for="token-state">State:</label>
-                            <input type="text" name="token-state" id="token-state"
-                                   class="text ui-widget-content ui-corner-all"/>
-                            <label for="token-on_timeline">on timeline for platform:</label>
-                            <input id="token-on_timeline" class="text ui-widget-content ui-corner-all" readonly/>
-
-                        </div>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold"> Start date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="token-start">Date:</label></td>
-                                <td><input type="text" name="token-start" id="token-start"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                    <td>
-
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold">End date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="token-end">Date:</label></td>
-                                <td><input type="text" name="token-end" id="token-end"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                </tr>
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
-
-<!-- --------------------------------------------------------- !-->
-<div id="platform-form" title="Platform">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                        <input type="checkbox" id="showAllPlatforms"/>
-                        <label for="showAllPlatforms">Show all platforms in timeline</label>
-                    </td>
-
-                </tr>
-
-                <!--<tr id="newPlaformSection">-->
-                    <!--<td colspan="2">-->
-                        <!--<div>-->
-                            <!--<br/><br/>-->
-                            <!--<hr/>-->
-                            <!--To create a new platform or remove an existing platform from-->
-                            <!--the database, enter its ID and click Add or Delete.-->
-                        <!--</div>-->
-                        <!--<br/>-->
-                        <!--<label for="platformField">Platform ID:</label>-->
-                        <!--<input id="platformField" size="50"/>-->
-                    <!--</td>-->
-
-                <!--</tr>-->
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
-
-
-<!-- --------------------------------------------------------- !-->
-<div id="period-form" title="Period">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                        Select period to visualize or create a new period:
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <select id="periodSelection"></select>
-                    </td>
-
-                </tr>
-
-                <tr id="newPeriodSection">
-                    <td colspan="2">
-                        <label for="newPeriodField">Name:</label>
-                        <input id="newPeriodField" size="50"/>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold"> Start date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><input type="text" name="period-start" id="period-start"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                    <td>
-
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold">End date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><input type="text" name="period-end" id="period-end"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                </tr>
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
-
+        <button class="btn btn-mini"
+                ng-click="debug.collapsed = !debug.collapsed">Model</button>
+        <div collapse="debug.collapsed">
+            <pre>{{debug.model | json}}</pre>
+        </div>
+    </div>
 
 </body>
 </html>

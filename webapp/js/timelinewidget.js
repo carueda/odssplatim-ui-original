@@ -61,7 +61,6 @@ function TimelineWidget(container, tokenForm) {
     addEditListener();
     addResizeListener();
     addSelectListener();
-    addDeleteListener();
 
 
     function getSelectedRow() {
@@ -79,7 +78,7 @@ function TimelineWidget(container, tokenForm) {
     this.reinit = function(holidays) {
         self.timeline.deleteAllItems();
         data.lenght = 0;
-        groups.length = 0;
+        groups = {};
         if (self.dc !== undefined) {
             self.dc.destroy();
         }
@@ -133,14 +132,9 @@ function TimelineWidget(container, tokenForm) {
     };
 
     function platformClicked(platform_id) {
-        var platform_name = groups[platform_id].tml.platform_name;
-
-        console.log("platformClicked= '" + platform_id + "' " +
-                "platform_name = '" + platform_name+ "'");
-
-        if (window.location.toString().match(/.*\?debug/)) {
-            $("#logarea").html(tablify(groups[platform_id].tml));
-        }
+        //var platform_name = groups[platform_id].tml.platform_name;
+        //console.log("platformClicked= '" + platform_id + "' " + "platform_name = '" + platform_name+ "'");
+        $("#logarea").html(tablify(groups[platform_id].tml));
     }
 
     this.addToken = function(token) {
@@ -148,16 +142,17 @@ function TimelineWidget(container, tokenForm) {
         //console.log("addToken: " + JSON.stringify(token));
 
         var body = {
+            'token_id':       token.id,
+            'platform_id':    token.platform_id,
+            'platform_name':  token.platform_name,
+            'state':          token.state,
+            'description':    token.description,
             'start':          parseDate(token.start),
             'end':            parseDate(token.end),
             'content':        getTokenContent(token),
             'group':          formattedGroup(token.platform_id),
             'className':      token.status + " " + "block-body",
 
-            'token_id':       token.id,
-            'platform_id':    token.platform_id,
-            'platform_name':  token.platform_name,
-            'state':          token.state,
             'status':         token.status
         };
 
@@ -208,22 +203,6 @@ function TimelineWidget(container, tokenForm) {
 
     function addChangeListener() {
 
-        function cancelChange(index, tokenInfo, msg) {
-            pstatus(msg);
-
-            self.timeline.cancelChange();
-
-            var bodyBlock  = data[index];
-
-            bodyBlock.start  = tokenInfo.start;
-            bodyBlock.end    = tokenInfo.end;
-        }
-
-        function blockWidth(block) {
-            return block.end - block.start;
-        }
-
-
         var onChange = function(event) {
             var originalDiff, newDiff, diffDiff, delta;
 
@@ -239,11 +218,6 @@ function TimelineWidget(container, tokenForm) {
 
             console.log("tokenInfo: " + JSON.stringify(tokenInfo));
 
-            if (tokenInfo.status === "status_accepted") {
-                cancelChange(index, tokenInfo, "Accepted token cannot be changed");
-                return;
-            }
-
             var bodyBlock  = data[index];
 
             //console.log("bodyBlock:  " + JSON.stringify(bodyBlock));
@@ -251,7 +225,7 @@ function TimelineWidget(container, tokenForm) {
             tokenInfo.start = bodyBlock.start;
             tokenInfo.end   = bodyBlock.end;
 
-            updateStatusModified(index, tokenInfo);
+            self.updateStatusModified(index, tokenInfo);
 
             self.redraw();
         };
@@ -269,7 +243,10 @@ function TimelineWidget(container, tokenForm) {
         self.timeline.redraw();
     };
 
-    function updateStatusModified(index, tokenInfo) {
+    self.updateStatusModified = function(index, tokenInfo) {
+        if (tokenInfo === undefined) {
+            tokenInfo = data[index];
+        }
         if (tokenInfo.status === "status_new") {
             return;
         }
@@ -283,7 +260,7 @@ function TimelineWidget(container, tokenForm) {
             self.updateStatus(index, tokenInfo, tokenInfo.status + "_modified");
         }
         console.log("modified status set to: " + tokenInfo.status);
-    }
+    };
 
     this.removeToken = function(tokenInfo, index, row) {
         self.timeline.deleteItem(row);
@@ -297,48 +274,10 @@ function TimelineWidget(container, tokenForm) {
             var element = data[row];
             console.log("EDIT: " + row + ": " + JSON.stringify(element));
 
-            var index = row;
-            var tokenInfo = element;
-
             self.tokenForm.showForm({
-                tokenInfo: tokenInfo,
-                index:     index,
-                row:       row,
-
-                accept: function(newTokenInfo) {
-
-                    if (tokenInfo.status === "status_saved") {
-                        var modified =
-                            tokenInfo.state !== newTokenInfo.state ||
-                            tokenInfo.start !== newTokenInfo.start ||
-                            tokenInfo.end   !== newTokenInfo.end;
-
-                        if (modified) {
-                            tokenInfo.status = "status_modified";
-                            tokenInfo.className = "block-body"  + " " + tokenInfo.status;
-                            //updateStatusModified(index, tokenInfo);
-                        }
-                    }
-
-                    tokenInfo.content = newTokenInfo.state;
-                    tokenInfo.state = newTokenInfo.state;
-                    tokenInfo.start = parseDate(newTokenInfo.start);
-                    tokenInfo.end   = parseDate(newTokenInfo.end);
-
-                    console.log("!! accept tokenInfo = " + JSON.stringify(tokenInfo));
-
-                    data[index] = tokenInfo;
-
-                    self.redraw();
-
-                },
-
-                cancel: function() {
-                    //self.timeline.deleteItem(index);
-                }
+                tokenInfo: element,
+                row:       row
             });
-
-
         };
 
         links.events.addListener(self.timeline, 'edit', onEdit);
@@ -351,9 +290,7 @@ function TimelineWidget(container, tokenForm) {
             if (row) {
                 var element = data[row];
 
-                if (window.location.toString().match(/.*\?debug/)) {
-                    $("#logarea").html(tablify(element));
-                }
+                $("#logarea").html(tablify(element));
 
                 console.log("SELECT: row=" + row + ": " + JSON.stringify(element));
                 self.timeline.selectItem(row);
@@ -366,39 +303,10 @@ function TimelineWidget(container, tokenForm) {
         links.events.addListener(self.timeline, 'select', onSelect);
     }
 
-    function addDeleteListener() {
-        var onDelete = function(event) {
-            var row = getSelectedRow();
-            if (row) {
-                console.log("DELETE: " + JSON.stringify(data[row]));
-                var newIndex = row;
-
-                self.timeline.cancelDelete();
-
-                var ok = function() {
-                    console.log("token removed (TODO)");
-                };
-                confirmDialog('Confirm token deletion', ok);
-            }
-        };
-
-        links.events.addListener(self.timeline, 'delete', onDelete);
-    }
-
     function addResizeListener() {
         $(window).bind('resize', function() {
             self.timeline.redraw();
         });
-    }
-
-
-
-    function select(index) {
-        // nothing to do.
-    }
-
-    function deselect(index) {
-        // nothing to do.
     }
 
     function formattedGroup(platform_id) {
