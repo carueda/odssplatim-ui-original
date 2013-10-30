@@ -46,18 +46,21 @@ angular.module('odssPlatimApp.controllers.platform', [])
             };
 
             $scope.isValid = function() {
-                return $scope.platformOptions.selection !== "types"
+                return !$scope.platformOptions.onlyWithTypes
                     || _.any(_.values($scope.platformOptions.selectedTypes));
             };
 
             $scope.isUnchanged = function() {
-                if ($scope.platformOptions.selection === "types") {
-                    return $scope.master.selection === "types"
-                        && angular.equals($scope.platformOptions.selectedTypes, $scope.master.selectedTypes);
+                if ($scope.platformOptions.onlyWithTypes !== $scope.master.onlyWithTypes) {
+                    return false;
                 }
-                else {
-                    return $scope.platformOptions.selection === $scope.master.selection;
+                if ($scope.platformOptions.onlyWithTokens !== $scope.master.onlyWithTokens) {
+                    return false;
                 }
+                if ($scope.platformOptions.onlyWithTypes === $scope.master.onlyWithTypes) {
+                    return angular.equals($scope.platformOptions.selectedTypes, $scope.master.selectedTypes);
+                }
+                return true;
             };
 
             $scope.reset();

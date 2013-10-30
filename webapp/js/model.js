@@ -10,8 +10,9 @@
 
         platformOptions: {
             platformTypes:   [],
-            selection:      "tokens",
-            selectedTypes:  {}
+            onlyWithTokens:  true,
+            onlyWithTypes:   false,
+            selectedTypes:   {}
         },
 
         holidays: [],
@@ -34,25 +35,22 @@
      * Gets the platforms selected according to the platform options.
      */
     model.getSelectedPlatforms = function() {
-        var selection = model.platformOptions.selection;
         var platforms = _.values(model.byPlat);
 
-        if (selection === "all") {
-            return platforms;
-        }
-        else if (selection === "types") {
-            var selected = model.getSelectedTypes();
-            console.log("showing platforms with selected types", selected);
-            return _.filter(platforms, function(tml) {
-                            return _.indexOf(selected, tml.typeName) >= 0; });
-        }
-        else if (selection === "tokens") {
-            return _.filter(platforms, function(tml) {
-                            return tml.tokens.length > 0; });
-        }
-        else {
-            throw new Error("unexpected selection value: " +selection);
-        }
+        var onlyWithTokens = model.platformOptions.onlyWithTokens;
+        var onlyWithTypes = model.platformOptions.onlyWithTypes;
+        var selected = model.getSelectedTypes();
+
+        return _.filter(platforms, function(tml) {
+            if (onlyWithTokens && tml.tokens.length == 0) {
+                return false;
+            }
+            if (onlyWithTypes) {
+                return _.indexOf(selected, tml.typeName) >= 0;
+
+            }
+            return true;
+        });
     };
 
     /**

@@ -8,18 +8,15 @@
         <br/>
         <br/>
 
-        <label class="radio">
-            <input type="radio" ng-model="platformOptions.selection" value="tokens">
+        <label class="checkbox">
+            <input type="checkbox" ng-model="platformOptions.onlyWithTokens"
+                   value="tokens">
             Only platforms having tokens
         </label>
 
-        <label class="radio">
-            <input type="radio" ng-model="platformOptions.selection" value="all"/>
-            Include all platforms
-        </label>
-
-        <label class="radio">
-            <input type="radio" ng-model="platformOptions.selection" value="types"/>
+        <label class="checkbox">
+            <input type="checkbox" ng-model="platformOptions.onlyWithTypes"
+                   value="types"/>
             Only platforms of these types:
         </label>
 
@@ -28,7 +25,8 @@
                 <li ng-repeat="pt in platformOptions.platformTypes">
                     <label class="checkbox">
                         <input type="checkbox" ng-model="platformOptions.selectedTypes[pt]"
-                               value="platformOptions.selectedTypes[pt]"/>
+                               value="platformOptions.selectedTypes[pt]"
+                               ng-disabled="!platformOptions.onlyWithTypes"/>
                         {{pt}}
                     </label>
                 </li>
