@@ -61,7 +61,6 @@ function TimelineWidget(container, tokenForm) {
     addEditListener();
     addResizeListener();
     addSelectListener();
-    addDeleteListener();
 
 
     function getSelectedRow() {
@@ -204,22 +203,6 @@ function TimelineWidget(container, tokenForm) {
 
     function addChangeListener() {
 
-        function cancelChange(index, tokenInfo, msg) {
-            pstatus(msg);
-
-            self.timeline.cancelChange();
-
-            var bodyBlock  = data[index];
-
-            bodyBlock.start  = tokenInfo.start;
-            bodyBlock.end    = tokenInfo.end;
-        }
-
-        function blockWidth(block) {
-            return block.end - block.start;
-        }
-
-
         var onChange = function(event) {
             var originalDiff, newDiff, diffDiff, delta;
 
@@ -234,11 +217,6 @@ function TimelineWidget(container, tokenForm) {
             var tokenInfo = element;
 
             console.log("tokenInfo: " + JSON.stringify(tokenInfo));
-
-            if (tokenInfo.status === "status_accepted") {
-                cancelChange(index, tokenInfo, "Accepted token cannot be changed");
-                return;
-            }
 
             var bodyBlock  = data[index];
 
@@ -296,48 +274,10 @@ function TimelineWidget(container, tokenForm) {
             var element = data[row];
             console.log("EDIT: " + row + ": " + JSON.stringify(element));
 
-            var index = row;
-            var tokenInfo = element;
-
             self.tokenForm.showForm({
-                tokenInfo: tokenInfo,
-                index:     index,
-                row:       row,
-
-                accept: function(newTokenInfo) {
-
-                    if (tokenInfo.status === "status_saved") {
-                        var modified =
-                            tokenInfo.state !== newTokenInfo.state ||
-                            tokenInfo.start !== newTokenInfo.start ||
-                            tokenInfo.end   !== newTokenInfo.end;
-
-                        if (modified) {
-                            tokenInfo.status = "status_modified";
-                            tokenInfo.className = "block-body"  + " " + tokenInfo.status;
-                            //self.updateStatusModified(index, tokenInfo);
-                        }
-                    }
-
-                    tokenInfo.content = newTokenInfo.state;
-                    tokenInfo.state = newTokenInfo.state;
-                    tokenInfo.start = parseDate(newTokenInfo.start);
-                    tokenInfo.end   = parseDate(newTokenInfo.end);
-
-                    console.log("!! accept tokenInfo = " + JSON.stringify(tokenInfo));
-
-                    data[index] = tokenInfo;
-
-                    self.redraw();
-
-                },
-
-                cancel: function() {
-                    //self.timeline.deleteItem(index);
-                }
+                tokenInfo: element,
+                row:       row
             });
-
-
         };
 
         links.events.addListener(self.timeline, 'edit', onEdit);
@@ -363,39 +303,10 @@ function TimelineWidget(container, tokenForm) {
         links.events.addListener(self.timeline, 'select', onSelect);
     }
 
-    function addDeleteListener() {
-        var onDelete = function(event) {
-            var row = getSelectedRow();
-            if (row) {
-                console.log("DELETE: " + JSON.stringify(data[row]));
-                var newIndex = row;
-
-                self.timeline.cancelDelete();
-
-                var ok = function() {
-                    console.log("token removed (TODO)");
-                };
-                confirmDialog('Confirm token deletion', ok);
-            }
-        };
-
-        links.events.addListener(self.timeline, 'delete', onDelete);
-    }
-
     function addResizeListener() {
         $(window).bind('resize', function() {
             self.timeline.redraw();
         });
-    }
-
-
-
-    function select(index) {
-        // nothing to do.
-    }
-
-    function deselect(index) {
-        // nothing to do.
     }
 
     function formattedGroup(platform_id) {

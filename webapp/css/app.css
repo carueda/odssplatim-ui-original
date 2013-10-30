@@ -25,14 +25,6 @@ fieldset { padding:0; border:0; margin-top:10px; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 
 
-.period_cell{
-    background-color:#FAFAFA;
-}
-
-.server {
-    color: gray;
-}
-
 /* links.timeline adjustments: */
 div.timeline-event-content {
     margin: 0px;
@@ -107,9 +99,6 @@ div.timeline-event-range-drag-right {
 }
 
 
-div.status_accepted {
-}
-
 div.status_new {
     font-weight: bold;
     color: red;
@@ -168,32 +157,6 @@ div.timeline-event-box {
 div.block-body {
     /*border-left-style: dotted;*/
     /*border-right-style: dotted;*/
-}
-
-
-
-
-
-.token-form {
-  -moz-box-shadow:   inset 0 1px 0 0 #ffffff;
-  -webkit-box-shadow:inset 0 1px 0 0 #ffffff;
-  box-shadow:        inset 0 1px 0 0 #ffffff;
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6) );
-  background:-moz-linear-gradient( center top, #ffffff 5%, #f6f6f6 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6');
-  background-color:#ffffff;
-  -moz-border-radius:6px;
-  -webkit-border-radius:6px;
-  border-radius:6px;
-  border:1px solid #dcdcdc;
-  /*display:inline-block;  REMOVED see http://stackoverflow.com/questions/3112876/firefox-table-css-generate-tbody-killing-table-width*/
-  color:#333333;
-  font-family:arial;
-  font-size:12px;
-  /*font-weight:bold;*/
-  padding:1px 12px;
-  text-decoration:none;
-  text-shadow:1px 1px 0 #ffffff;
 }
 
 
