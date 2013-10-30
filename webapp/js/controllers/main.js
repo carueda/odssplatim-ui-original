@@ -165,5 +165,8 @@ angular.module('odssPlatimApp.controllers.main', [])
         };
 
         $(document).tooltip(); // TODO remove jQ stuff
+
+        // initial refresh
+        $scope.refresh();
     }])
 ;
