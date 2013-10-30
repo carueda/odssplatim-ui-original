@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * Dispatches the Period form.
+ * Allows to add new periods, remove a period, set the default period.
+ *
+ * NOTE: not completely implemented. For example, there is no direct way for the
+ * user to reset to the saved period info after applying a modification in the UI.
+ */
 angular.module('odssPlatimApp.controllers.period', [])
 
     .controller('PeriodCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
@@ -113,7 +120,12 @@ angular.module('odssPlatimApp.controllers.period', [])
             };
 
             $scope.isUnchanged = function() {
-                return angular.equals($scope.info.selectedPeriod.id, $scope.master.selectedPeriod.id);
+                var formSelectedPeriod   = $scope.info.selectedPeriod;
+                var masterSelectedPeriod = $scope.master.selectedPeriod;
+                return angular.equals(formSelectedPeriod.id, masterSelectedPeriod.id)
+                    && angular.equals(formSelectedPeriod.start, masterSelectedPeriod.start)
+                    && angular.equals(formSelectedPeriod.end, masterSelectedPeriod.end)
+                ;
             };
 
             $scope.isInvalid = function() {

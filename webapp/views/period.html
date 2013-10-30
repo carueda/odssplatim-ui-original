@@ -4,6 +4,10 @@
 <div class="modal-body">
 
     <form name="form" class="css-form" novalidate>
+        <p>
+            Select the period (time range) to visualize in the timeline
+            or create a new period:
+        </p>
 
         <select ng-model="info.selectedPeriod"
                 ng-options="v as v.name for v in info.periods"
@@ -54,21 +58,25 @@
     <button ng-show="!isCreating()"
             class="btn btn-primary" ng-click="set()"
             ng-disabled="isUnchanged()"
+            title="Applies the changes in the timeline"
             >Apply</button>
 
     <button ng-show="!isCreating()"
             class="btn btn-primary" ng-click="setDefault()"
             ng-disabled="isCreating()"
+            title="Sets this period as the default"
             >Set default</button>
 
     <button ng-show="!isCreating()"
             class="btn btn-warning" ng-click="delete()"
             ng-disabled="cannotDelete()"
-            >Delete</button>
+            title="Deletes this period from the database"
+            >Delete...</button>
 
     <button ng-show="isCreating()"
             class="btn btn-primary" ng-click="create()"
             ng-disabled="isInvalid()"
+            title="Add the new period to the database"
             >Create</button>
 
     <button class="btn" ng-click="cancel()">Cancel</button>
