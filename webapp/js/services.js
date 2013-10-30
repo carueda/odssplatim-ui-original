@@ -117,8 +117,23 @@ angular.module('odssPlatimApp.services', [])
          * @param fns  Callback functions
          */
         var putTokens = function(fns) {
+
             var platforms_with_tokens = _.pick(platimModel.byPlat, platimModel.platform_ids);
-            _.each(platforms_with_tokens, function(tml) {
+            var list = _.values(platforms_with_tokens);
+
+            /**
+             * Retrieves the tokens for the platform at the given index in the
+             * list, and then recursively calls doList(index + 1).
+             * listDone(true) is called when the list is completed, and
+             * listDone(false) upon any error in the corresponding request.
+             * @param index  Index in list
+             */
+            function doList(index) {
+                if (index >= list.length) {
+                    listDone(true);
+                    return;
+                }
+                var tml = list[index];
                 var platform_id   = tml.platform_id;
                 var platform_name = tml.platform_name;
                 //console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
@@ -137,11 +152,22 @@ angular.module('odssPlatimApp.services', [])
                         platimModel.byPlat[platform_id].tokens = tokens;
                         //console.log("tokens added to " + tml.platform_name+ ":", tokens);
                         fns.gotTokens(tml, tokens);
+                        doList(index + 1)
                     })
 
-                    .error(httpErrorHandler);
-            });
-            refreshPeriods(fns);
+                    .error(function(data, status, headers, config) {
+                        httpErrorHandler(data, status, headers, config);
+                        listDone(false);
+                    });
+            }
+
+            function listDone(ok) {
+                if (ok) {
+                    refreshPeriods(fns);
+                }
+            }
+
+            doList(0);
         };
 
         /**
