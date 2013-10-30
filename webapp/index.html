@@ -14,66 +14,32 @@
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
-    <script src="vendor/jquery/ui/jquery-ui.js"></script>
-    <script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
-    <script src="vendor/moment/moment.js"></script>
-    <script src="vendor/links/timeline.js"></script>
-    <script src='vendor/links/datehighlight.js' charset="utf-8"></script>
-    <script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
-
-    <script src='js/config.js' charset="utf-8"></script>
-    <script src='js/common.js' charset="utf-8"></script>
-    <script src='js/timelinewidget.js' charset="utf-8"></script>
-    <script src='js/tokenform.js' charset="utf-8"></script>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-sanitize.js"></script>
-    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
-    <script src='js/services.js' charset="utf-8"></script>
-    <script src='js/controllers/platform.js' charset="utf-8"></script>
-    <script src='js/controllers/timeline.js' charset="utf-8"></script>
-    <script src='js/controllers/period.js' charset="utf-8"></script>
-    <script src='js/controllers/util.js' charset="utf-8"></script>
-    <script src='js/controllers/main.js' charset="utf-8"></script>
-    <script src='js/model.js' charset="utf-8"></script>
-    <script src='js/ngapp.js' charset="utf-8"></script>
-
-<!--
-    <script src='js/periodform.js' charset="utf-8"></script>
-    <script src='js/platformform.js' charset="utf-8"></script>
-    <script src='js/app.js' charset="utf-8"></script>
--->
-
 </head>
 
 <body>
 
 <div ng-controller="MainCtrl">
     <div class="btn-group">
-    <button class="btn btn-small" ng-click="refresh()">Refresh</button>
-    <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()">Platform</button>
-    <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()">Period</button>
-    <button class="btn btn-small" ng-click="save()">Save</button>
+    <button class="btn btn-small" ng-click="refresh()"
+            title="Reloads the timeline (discarding all unsaved changes, if any)"
+            >Refresh</button>
+    <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()"
+            title="Platform options"
+            >Platform</button>
+    <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()"
+            title="Allows to visualize a pre-defined period or create a new period"
+            >Period</button>
+    <button class="btn btn-small" ng-click="save()"
+            title="Saves all new and modified tokens"
+            >Save</button>
+    <button class="btn btn-small" ng-show="showVersions" ng-click="showVersions()"
+            title="Revision history"
+            >Versions</button>
     </div>
+    <span ng-show="currentVersion"
+          title="{{currentVersion.saved}} (by {{currentVersion.author}})"
+          >Last edit {{currentVersion.saved}}</span>
 </div>
-
-
-<!--
-<div style="text-align:left">
-    <button class="graybutton" id="refresh"
-            title="Reloads the timeline (discarding all unsaved changes, if any)">Refresh</button>
-    <button class="graybutton" id="save" title="Saves all new and modified tokens">Save</button>
-    <button class="graybutton" id="showPlatformForm" title="Platform options">Platform</button>
-    <button class="graybutton" id="selectPeriod"
-            title="Allows to visualize a pre-defined period or create a new period">Period
-    </button>
-    <button class="graybutton" id="versions" title="Revision history">Versions
-    </button>
-    <span>Last edit on ___ by ___</span>
-</div>
--->
 
 
 <div ng-controller="TimelineCtrl" id="timelines"></div>
@@ -98,205 +64,30 @@
     </div>
 </div>
 
+<script src='vendor/jquery/jquery-1.10.2.min.js' charset="utf-8"></script>
+<script src="vendor/jquery/ui/jquery-ui.js"></script>
+<script src="vendor/jquery/ui/addon/jquery-ui-timepicker-addon.js"></script>
+<script src="vendor/moment/moment.js"></script>
+<script src="vendor/links/timeline.js"></script>
+<script src='vendor/links/datehighlight.js' charset="utf-8"></script>
+<script src='vendor/underscore/underscore-min.js' charset="utf-8"></script>
 
-<!-- --------------------------------------------------------- !-->
-<!--
-<div id="token-form" title="Token">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
+<script src='js/config.js' charset="utf-8"></script>
+<script src='js/common.js' charset="utf-8"></script>
+<script src='js/timelinewidget.js' charset="utf-8"></script>
+<script src='js/tokenform.js' charset="utf-8"></script>
 
-                    <td colspan="3">
-                        <div style="text-align: center">
-                            <label for="token-state">State:</label>
-                            <input type="text" name="token-state" id="token-state"
-                                   class="text ui-widget-content ui-corner-all"/>
-                            <label for="token-on_timeline">on timeline for platform:</label>
-                            <input id="token-on_timeline" class="text ui-widget-content ui-corner-all" readonly/>
-
-                        </div>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold"> Start date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="token-start">Date:</label></td>
-                                <td><input type="text" name="token-start" id="token-start"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                    <td>
-
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold">End date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="token-end">Date:</label></td>
-                                <td><input type="text" name="token-end" id="token-end"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                </tr>
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
--->
-
-<!-- --------------------------------------------------------- !-->
-<!--
-<div id="platform-form" title="Platform">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                        <input type="checkbox" id="showAllPlatforms"/>
-                        <label for="showAllPlatforms">Show all platforms in timeline</label>
-                    </td>
-
-                </tr>
-
-                &lt;!&ndash;<tr id="newPlaformSection">&ndash;&gt;
-                    &lt;!&ndash;<td colspan="2">&ndash;&gt;
-                        &lt;!&ndash;<div>&ndash;&gt;
-                            &lt;!&ndash;<br/><br/>&ndash;&gt;
-                            &lt;!&ndash;<hr/>&ndash;&gt;
-                            &lt;!&ndash;To create a new platform or remove an existing platform from&ndash;&gt;
-                            &lt;!&ndash;the database, enter its ID and click Add or Delete.&ndash;&gt;
-                        &lt;!&ndash;</div>&ndash;&gt;
-                        &lt;!&ndash;<br/>&ndash;&gt;
-                        &lt;!&ndash;<label for="platformField">Platform ID:</label>&ndash;&gt;
-                        &lt;!&ndash;<input id="platformField" size="50"/>&ndash;&gt;
-                    &lt;!&ndash;</td>&ndash;&gt;
-
-                &lt;!&ndash;</tr>&ndash;&gt;
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
--->
-
-
-<!-- --------------------------------------------------------- !-->
-<!--
-<div id="period-form" title="Period">
-    <form>
-        <fieldset>
-            <table>
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                        Select period to visualize or create a new period:
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <select id="periodSelection"></select>
-                    </td>
-
-                </tr>
-
-                <tr id="newPeriodSection">
-                    <td colspan="2">
-                        <label for="newPeriodField">Name:</label>
-                        <input id="newPeriodField" size="50"/>
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td>
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold"> Start date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><input type="text" name="period-start" id="period-start"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                    <td>
-
-                        <table class="token-form">
-                            <tbody>
-
-                            <tr>
-                                <td colspan="2">
-                                    <div style="text-align: center; font-weight: bold">End date</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td><input type="text" name="period-end" id="period-end"
-                                           class="text ui-widget-content ui-corner-all"
-                                        /></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-
-                    </td>
-
-                </tr>
-
-                </tbody>
-            </table>
-
-        </fieldset>
-    </form>
-</div>
--->
-
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-sanitize.js"></script>
+<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
+<script src='js/services.js' charset="utf-8"></script>
+<script src='js/controllers/platform.js' charset="utf-8"></script>
+<script src='js/controllers/timeline.js' charset="utf-8"></script>
+<script src='js/controllers/period.js' charset="utf-8"></script>
+<script src='js/controllers/util.js' charset="utf-8"></script>
+<script src='js/controllers/main.js' charset="utf-8"></script>
+<script src='js/model.js' charset="utf-8"></script>
+<script src='js/ngapp.js' charset="utf-8"></script>
 
 </body>
 </html>
