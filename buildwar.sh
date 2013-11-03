@@ -4,4 +4,4 @@
 # deployment on tomcat or similar container.
 
 mkdir -p dist
-cd webapp && jar cf ../dist/odssplatim-ui.war *
+cd app && jar cf ../dist/odssplatim-ui.war *
