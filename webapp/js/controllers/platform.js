@@ -11,7 +11,7 @@ angular.module('odssPlatimApp.controllers.platform', [])
                 console.log("$scope.platformOptions:", $scope.platformOptions);
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/platform.html',
+                    templateUrl: 'views/platform.tpl.html',
                     controller: 'PlatformInstanceCtrl',
                     resolve: {
                         platformOptions: function () {

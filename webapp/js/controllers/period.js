@@ -14,7 +14,7 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             $scope.open = function () {
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/period.html',
+                    templateUrl: 'views/period.tpl.html',
                     controller:  'PeriodInstanceCtrl',
                     backdrop:    'static'
                 });

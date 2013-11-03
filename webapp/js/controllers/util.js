@@ -14,7 +14,7 @@ angular.module('odssPlatimApp.controllers.util', [])
             $scope.open = function () {
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/confirm.html',
+                    templateUrl: 'views/confirm.tpl.html',
                     controller: 'ConfirmInstanceCtrl',
                     resolve: {
                         info: function () {
