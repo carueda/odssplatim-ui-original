@@ -28,12 +28,12 @@ angular.module('odssPlatimApp.services', [])
                     //console.log("getAllPlatforms: " + JSON.stringify(res));
 
                     _.each(res, function(elm) {
-                        var platform_id = elm.id;
+                        var platform_id = elm._id;
                         var tml = _.extend({
                             platform_id:   platform_id,
                             platform_name: elm.name
                         }, elm);
-                        tml = _.omit(tml, 'id', 'name');
+                        tml = _.omit(tml, '_id', 'name');
 
                         if (!_.contains(platimModel.platformOptions.platformTypes, tml.typeName)) {
                             platimModel.platformOptions.platformTypes.push(tml.typeName)
@@ -90,12 +90,12 @@ angular.module('odssPlatimApp.services', [])
 
                     platimModel.platform_ids = [];
                     _.each(res, function(elm) {
-                        var platform_id = elm.id;
+                        var platform_id = elm._id;
                         var tml = _.extend({
                             platform_id:   platform_id,
                             platform_name: elm.name
                         }, elm);
-                        tml = _.omit(tml, 'id', 'name');
+                        tml = _.omit(tml, '_id', 'name');
 
                         tml.tokens = [];
                         platimModel.byPlat[platform_id] = tml;
@@ -145,7 +145,7 @@ angular.module('odssPlatimApp.services', [])
                     .success(function(tokens, status, headers, config) {
                         success();
                         _.each(tokens, function(token) {
-                            token.token_id      = token.id;
+                            token.token_id      = token._id;
                             token.platform_name = platform_name;
                             token.status        = "status_saved";
                         });
@@ -182,7 +182,7 @@ angular.module('odssPlatimApp.services', [])
                     success();
                     platimModel.periods = {};
                     _.each(res, function(per) {
-                        platimModel.periods[per.id] = per;
+                        platimModel.periods[per._id] = per;
                     });
                     fns.gotPeriods(platimModel.periods);
                     getDefaultPeriodId(fns);
@@ -221,9 +221,9 @@ angular.module('odssPlatimApp.services', [])
         /**
          * Sets the default period.
          */
-        var setDefaultPeriodId = function(id) {
+        var setDefaultPeriodId = function(_id) {
             var url;
-            if (id === undefined) {
+            if (_id === undefined) {
                 url = odssplatimConfig.rest + "/periods/default";
                 console.log("DELETE " + url);
                 $http.delete(url)
@@ -235,12 +235,12 @@ angular.module('odssPlatimApp.services', [])
                     .error(httpErrorHandler);
             }
             else {
-                url = odssplatimConfig.rest + "/periods/default/" + id;
+                url = odssplatimConfig.rest + "/periods/default/" + _id;
                 console.log("PUT " + url);
                 $http.put(url)
                     .success(function(res, status, headers, config) {
                         success();
-                        platimModel.selectedPeriodId = id;
+                        platimModel.selectedPeriodId = _id;
                     })
 
                     .error(httpErrorHandler);
@@ -250,14 +250,14 @@ angular.module('odssPlatimApp.services', [])
         /**
          * Removes the given period from the database.
          */
-        var removePeriod = function(id) {
-            var url = odssplatimConfig.rest + "/periods/" + id;
+        var removePeriod = function(_id) {
+            var url = odssplatimConfig.rest + "/periods/" + _id;
             console.log("DELETE " + url);
             $http.delete(url)
                 .success(function(res, status, headers, config) {
                     success();
-                    delete platimModel.periods[id];
-                    if (platimModel.selectedPeriodId === id) {
+                    delete platimModel.periods[_id];
+                    if (platimModel.selectedPeriodId === _id) {
                         platimModel.selectedPeriodId = undefined;
                     }
                 })
@@ -286,8 +286,8 @@ angular.module('odssPlatimApp.services', [])
             })
                 .success(function(res, status, headers, config) {
                     success();
-                    platimModel.periods[res.id] = res;
-                    platimModel.selectedPeriodId = res.id;
+                    platimModel.periods[res._id] = res;
+                    platimModel.selectedPeriodId = res._id;
                     successFn();
                 })
 
@@ -342,7 +342,7 @@ angular.module('odssPlatimApp.services', [])
                 })
                     .success(function(data, status, headers, config) {
                         success();
-                        tokenInfo.token_id = data.id;
+                        tokenInfo.token_id = data._id;
                         successFn(index, tokenInfo);
                         console.log("token posted:", tokenInfo);
                     })

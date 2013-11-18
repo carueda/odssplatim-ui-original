@@ -21,7 +21,7 @@ angular.module('odssPlatimApp.controllers.period', [])
 
                 modalInstance.result.then(function (selectedPeriod) {
                     console.log('Period dialog accepted:', selectedPeriod);
-                    platimModel.selectedPeriodId = selectedPeriod.id;
+                    platimModel.selectedPeriodId = selectedPeriod._id;
                     service.periodSelected();
                 }, function () {
                     console.log('Period dialog dismissed');
@@ -35,7 +35,7 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             var periods_plus_create = platimModel.periods;
             periods_plus_create["--all tokens--"] = {
-               id:     "--all tokens--",
+               _id:    "--all tokens--",
                name:   "Show all tokens",
                start:  undefined,
                end:    undefined
@@ -43,7 +43,7 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             var dr = timelineWidget.getVisibleChartRange();
             periods_plus_create["--create period--"] = {
-               id:     "--create period--",
+               _id:    "--create period--",
                name:   "--create period--",
                start:  moment(dr.start).toDate(),
                end:    moment(dr.end).toDate()
@@ -78,7 +78,7 @@ angular.module('odssPlatimApp.controllers.period', [])
             };
 
             $scope.isCreating = function() {
-                return $scope.info.selectedPeriod.id == "--create period--";
+                return $scope.info.selectedPeriod._id == "--create period--";
             };
 
             $scope.create = function() {
@@ -96,11 +96,11 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             $scope.setDefault = function() {
                 console.log("setDefault:", $scope.info.selectedPeriod);
-                var id = $scope.info.selectedPeriod.id;
-                if ( id === "--all tokens--") {
-                    id = undefined;
+                var _id = $scope.info.selectedPeriod._id;
+                if ( _id === "--all tokens--") {
+                    _id = undefined;
                 }
-                service.setDefaultPeriodId(id);
+                service.setDefaultPeriodId(_id);
                 // and set this period, and close dialog:
                 $scope.set();
             };
@@ -114,7 +114,7 @@ angular.module('odssPlatimApp.controllers.period', [])
                     message:   "Period '" + periodInfo.name + "' will be deleted.",
                     ok:        function() {
                         $modalInstance.dismiss('delete period');
-                        service.removePeriod(periodInfo.id);
+                        service.removePeriod(periodInfo._id);
                     }
                 });
             };
@@ -122,7 +122,7 @@ angular.module('odssPlatimApp.controllers.period', [])
             $scope.isUnchanged = function() {
                 var formSelectedPeriod   = $scope.info.selectedPeriod;
                 var masterSelectedPeriod = $scope.master.selectedPeriod;
-                return angular.equals(formSelectedPeriod.id, masterSelectedPeriod.id)
+                return angular.equals(formSelectedPeriod._id, masterSelectedPeriod._id)
                     && angular.equals(formSelectedPeriod.start, masterSelectedPeriod.start)
                     && angular.equals(formSelectedPeriod.end, masterSelectedPeriod.end)
                 ;
@@ -136,8 +136,8 @@ angular.module('odssPlatimApp.controllers.period', [])
 
             $scope.cannotDelete = function() {
                 return $scope.isCreating()
-                    || $scope.info.selectedPeriod.id.indexOf("--") == 0
-                    || $scope.info.selectedPeriod.id === platimModel.selectedPeriodId;
+                    || $scope.info.selectedPeriod._id.indexOf("--") == 0
+                    || $scope.info.selectedPeriod._id === platimModel.selectedPeriodId;
             };
 
             $scope.cancel = function () {

@@ -142,7 +142,7 @@ function TimelineWidget(container, tokenForm) {
         //console.log("addToken: " + JSON.stringify(token));
 
         var body = {
-            'token_id':       token.id,
+            'token_id':       token._id,
             'platform_id':    token.platform_id,
             'platform_name':  token.platform_name,
             'state':          token.state,
