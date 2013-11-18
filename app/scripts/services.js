@@ -272,17 +272,12 @@ angular.module('odssPlatimApp.services', [])
             console.log("addPeriod:", newPeriodInfo);
             pstatus("saving new period '" +newPeriodInfo.name+ "'");
             var url = odssplatimConfig.rest + "/periods";
-            console.log("POST " + url);
 
-            /* note: currently, back-end service expects data as parameters,
-             * not as json payload.
-             */
-            var params = $.param(newPeriodInfo);
+            console.log("POST " + url, "newPeriodInfo=", newPeriodInfo);
             $http({
                 method:  'POST',
                 url:     url,
-                data:    params,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                data:    newPeriodInfo
             })
                 .success(function(res, status, headers, config) {
                     success();
