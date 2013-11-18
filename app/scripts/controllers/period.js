@@ -36,7 +36,7 @@ angular.module('odssPlatimApp.controllers.period', [])
             var periods_plus_create = platimModel.periods;
             periods_plus_create["--all tokens--"] = {
                _id:    "--all tokens--",
-               name:   "Show all tokens",
+               period:   "Show all tokens",
                start:  undefined,
                end:    undefined
             };
@@ -44,7 +44,7 @@ angular.module('odssPlatimApp.controllers.period', [])
             var dr = timelineWidget.getVisibleChartRange();
             periods_plus_create["--create period--"] = {
                _id:    "--create period--",
-               name:   "--create period--",
+               period:   "--create period--",
                start:  moment(dr.start).toDate(),
                end:    moment(dr.end).toDate()
             };
@@ -84,7 +84,7 @@ angular.module('odssPlatimApp.controllers.period', [])
             $scope.create = function() {
                 console.log("create:", $scope.info);
                 var newPeriodInfo = {
-                    name:  $scope.info.newName,
+                    period:  $scope.info.newName,
                     start: moment($scope.info.selectedPeriod.start).format("YYYY-MM-DD"),
                     end:   moment($scope.info.selectedPeriod.end).  format("YYYY-MM-DD")
                 };
@@ -111,7 +111,7 @@ angular.module('odssPlatimApp.controllers.period', [])
                 var periodInfo = $scope.info.selectedPeriod;
                 service.confirm({
                     title:     "Confirm deletion",
-                    message:   "Period '" + periodInfo.name + "' will be deleted.",
+                    message:   "Period '" + periodInfo.period + "' will be deleted.",
                     ok:        function() {
                         $modalInstance.dismiss('delete period');
                         service.removePeriod(periodInfo._id);

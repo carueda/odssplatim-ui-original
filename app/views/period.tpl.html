@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3>Period: {{info.selectedPeriod.name}}</h3>
+    <h3>Period: {{info.selectedPeriod.period}}</h3>
 </div>
 <div class="modal-body">
 
@@ -10,7 +10,7 @@
         </p>
 
         <select ng-model="info.selectedPeriod"
-                ng-options="v as v.name for v in info.periods"
+                ng-options="v as v.period for v in info.periods"
                 ng-change="change()"
                 id="period-select">
         </select>
