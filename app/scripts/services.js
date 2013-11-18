@@ -306,8 +306,7 @@ angular.module('odssPlatimApp.services', [])
 
             if (tokenInfo.token_id !== undefined) {
                 // update existing token:
-                console.log("saveToken: updating token_id=" +tokenInfo.token_id+
-                            ": " +JSON.stringify(item));
+                console.log("saveToken: updating token_id=" +tokenInfo.token_id, item);
                 pprogress("saving modified token ...");
 
                 url = odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id;
