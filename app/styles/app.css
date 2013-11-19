@@ -72,7 +72,7 @@ div.timeline-event-range {
 
     height: 14px;
     background-color: #FDF3D5;
-    /*background: url(codebase/imgs/resize_dots.png) 10% repeat-y, url(codebase/imgs/resize_dots.png) 90% repeat-y, #FDF3D5;*/
+    /*background: url(../img/resize_dots.png) 10% repeat-y, url(../img/resize_dots.png) 90% repeat-y, #FDF3D5;*/
 
     /*border: 1px solid #FFBD51;*/
     border: 1px solid #000000;
@@ -89,13 +89,11 @@ div.timeline-event-range {
 
 div.timeline-event-range-drag-left {
     z-index: 100;
-    /*background: url(codebase/imgs/resize_dots.png) repeat-y;*/
-    background: url(../codebase/imgs/resize_dots.png), repeat-y, repeat-x;
+    background: url(../img/resize_dots.png), repeat-y, repeat-x;
 }
 div.timeline-event-range-drag-right {
     z-index: 100;
-    /*background: url(codebase/imgs/resize_dots.png) 6px repeat-y;*/
-    background: url(../codebase/imgs/resize_dots.png), repeat-y, repeat-x;
+    background: url(../img/resize_dots.png), repeat-y, repeat-x;
 }
 
 
