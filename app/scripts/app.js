@@ -9,5 +9,6 @@ angular.module('odssPlatimApp', [
     'odssPlatimApp.controllers.period',
     'odssPlatimApp.controllers.util',
     'odssPlatimApp.services',
-    'odssPlatimApp.controllers.main'
+    'odssPlatimApp.controllers.main',
+    'odssPlatimApp.directives'
 ]);
