@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="odssPlatimApp">
+<html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>ODSS Platform Timeline Editor -- prototype</title>
@@ -8,7 +8,7 @@
     <link rel='stylesheet' href='vendor/links/timeline.css'>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
-    <link rel='stylesheet' href='styles/app.css'>
+    <link rel='stylesheet' href='styles/platim.css'>
 
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,6 +29,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-sanitize.js"></script>
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.6.0.js"></script>
     <script src='scripts/services.js' charset="utf-8"></script>
+    <script src='scripts/directives.js' charset="utf-8"></script>
     <script src='scripts/controllers/platform.js' charset="utf-8"></script>
     <script src='scripts/controllers/timeline.js' charset="utf-8"></script>
     <script src='scripts/controllers/period.js' charset="utf-8"></script>
@@ -39,50 +40,12 @@
 
 </head>
 
-<body>
+<body style="margin: 5px">
 
-    <div ng-controller="MainCtrl">
-        <div class="btn-group">
-        <button class="btn btn-small" ng-click="refresh()"
-                title="Reloads the timeline (discarding all unsaved changes, if any)"
-                >Refresh</button>
-        <button class="btn btn-small" ng-controller="PlatformCtrl" ng-click="open()"
-                title="Platform options"
-                >Platform</button>
-        <button class="btn btn-small" ng-controller="PeriodCtrl" ng-click="open()"
-                title="Allows to visualize a pre-defined period or create a new period"
-                >Period</button>
-        <button class="btn btn-small" ng-click="save()"
-                title="Saves all new and modified tokens"
-                >Save</button>
-        <button class="btn btn-small" ng-show="showVersions" ng-click="showVersions()"
-                title="Revision history"
-                >Versions</button>
-        </div>
-        <span ng-show="currentVersion"
-              title="{{currentVersion.saved}} (by {{currentVersion.author}})"
-              >Last edit {{currentVersion.saved}}</span>
-    </div>
+    <h3>ODSS Platform Timeline Editor</h3>
 
-    <div ng-controller="TimelineCtrl" id="timelines"></div>
-
-    <div style="position:absolute; top:10px; right:0; width:450px;">
-        <div id="status" style="background-color: orange; position:absolute; left:0;">
-        </div>
-    </div>
-
-    <div id="error" style="color: #CC0000">
-    </div>
-
-    <div ng-controller="MainCtrl" ng-show="debug">
-        <div id="logarea" style="color: blue; background-color: #f8fff7">
-        </div>
-
-        <button class="btn btn-mini"
-                ng-click="debug.collapsed = !debug.collapsed">Model</button>
-        <div collapse="debug.collapsed">
-            <pre>{{debug.model | json}}</pre>
-        </div>
+    <div class="odssplatim" ng-app="odssPlatimApp">
+        <odss-platim></odss-platim>
     </div>
 
 </body>

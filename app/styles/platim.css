@@ -1,20 +1,11 @@
 
-html, body{
-    margin: 3px;
-    padding: 0;
-    height: 100%;
-    /*overflow: hidden;*/
+div.odssplatim {
+    /* overall defs for the widget */
 
     line-height: 1; /* override bootstrap's value of 20px; which makes the
                      * contents of the tokens to get positioned too low. */
 }
 
-/*
-body {
-    font-size: 8pt;
-    font-family: verdana, sans, arial, sans-serif;
-}
-*/
 input.text {
     margin-bottom:12px;  padding: .4em; font-size: 10px;
     /*width: 160px;*/

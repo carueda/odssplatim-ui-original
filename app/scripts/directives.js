@@ -7,9 +7,9 @@ angular.module('odssPlatimApp.directives', [])
 
     /**
      * Allows to insert the platform timeline editor widget in a page.
-     * For example, assuming the required scripts are in place (see indexD.html):
+     * For example, assuming the required scripts are in place:
      * <pre>
-     *      <div ng-app="odssPlatimApp">
+     *      <div class="odssplatim" ng-app="odssPlatimApp">
      *          <odss-platim></odss-platim>
      *      </div>
      * </pre>
