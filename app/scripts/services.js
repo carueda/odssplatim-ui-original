@@ -82,7 +82,7 @@ angular.module('odssPlatimApp.services', [])
          * @param fns  Callback functions
          */
         var refreshTimelines = function(fns) {
-            var url = odssplatimConfig.rest + "/timelines";
+            var url = odssplatimConfig.rest + "/tokens/timelines";
             console.log("GET " + url);
             $http.get(url)
                 .success(function(res, status, headers, config) {
@@ -139,7 +139,7 @@ angular.module('odssPlatimApp.services', [])
                 //console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
                 pprogress("getting tokens for " + platform_name);
 
-                var url = odssplatimConfig.rest + "/timelines/" + platform_id;
+                var url = odssplatimConfig.rest + "/tokens/timelines/" + platform_id;
                 console.log("GET " + url);
                 $http.get(url)
                     .success(function(tokens, status, headers, config) {
