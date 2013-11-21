@@ -148,7 +148,7 @@ function tablify(obj, simple) {
     var result = '<table>';  // assuming there are own properties
 
     var own = 0;
-    for (key in obj) {
+    for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
             own += 1;
             (function(key) {
