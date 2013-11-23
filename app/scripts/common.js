@@ -26,24 +26,6 @@ function unparseDate(date) {
     return f;
 }
 
-function prepareHover() {
-//    console.log("prepareHover");
-//    $(".timeline-event-range").hover(
-//        function () {
-//            var domEl = $(this).get(0);
-//            var className = "block-selected";
-//            links.Timeline.addClassName(domEl, className);
-//            //$(this).addClass("block-selected");
-//        },
-//        function () {
-//            var domEl = $(this).get(0);
-//            var className = "block-selected";
-//            links.Timeline.removeClassName(domEl, className);
-//            //$(this).removeClass("block-selected");
-//        }
-//    );
-}
-
 function pstatus(msg, autohide) {
     if ( msg == undefined || msg === "") {
         $("#status").text("");
@@ -59,12 +41,6 @@ function pstatus(msg, autohide) {
 
 function pprogress(msg) {
     pstatus(msg);
-//    if ( msg == undefined || msg == "") {
-//        $("#status").text("");
-//    }
-//    else {
-//        pstatus(msg, false);
-//    }
 }
 
 function perror(err) {
@@ -76,52 +52,9 @@ function perror(err) {
 }
 
 function success() {
-    //pprogress();
     $("#error").text("");
 }
 
-
-// adapted from http://jsfiddle.net/didierg/znq9M/
-function confirmDialog(message, onOK, onCancel) {
-    $('<div>' + message + '</div>').dialog({
-        modal: true,
-        title: "Confirm",
-        buttons : {
-            "OK" : function() {
-                $(this).dialog("close");
-                if (onOK && $.isFunction(onOK)) {
-                    onOK();
-                }
-                $(this).dialog("destroy");
-            },
-            "Cancel" : function() {
-                $(this).dialog("close");
-                if (onCancel && $.isFunction(onCancel)) {
-                    onCancel();
-                }
-                $(this).dialog("destroy");
-            }
-        }
-    });
-
-}
-
-function messageDialog(message, opts) {
-    var opts = opts || {};
-    $('<div>' + message + '</div>').dialog({
-        modal: true,
-        title: opts.title || "",
-        buttons : {
-            "OK" : function() {
-                if (opts.onOK && $.isFunction(opts.onOK)) {
-                    opts.onOK();
-                }
-                $(this).dialog("close");
-                $(this).dialog("destroy");
-            }
-        }
-    });
-}
 
 function tablify(obj, simple) {
     simple = simple === undefined || simple;
