@@ -55,6 +55,14 @@ angular.module('odssPlatimApp.controllers.main', [])
             timelineWidget.redraw();
         }
 
+        function pstatus(msg) {
+            var actId = status.activities.add(msg);
+            setTimeout(function() {
+                status.activities.remove(actId);
+                $scope.$digest();
+            }, 3000);
+        }
+
         /**
          * Triggers the refresh of the model.
          */

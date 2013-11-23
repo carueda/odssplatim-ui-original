@@ -26,19 +26,6 @@ function unparseDate(date) {
     return f;
 }
 
-function pstatus(msg, autohide) {
-    if ( msg == undefined || msg === "") {
-        $("#status").text("");
-    }
-    else if (autohide == undefined || autohide == true) {
-        $("#status").stop(true, true).text(msg)
-            .fadeIn(0).delay(2000).fadeOut(1000);
-    }
-    else {
-        $("#status").text(msg).fadeIn(1000);
-    }
-}
-
 function tablify(obj, simple) {
     simple = simple === undefined || simple;
 
