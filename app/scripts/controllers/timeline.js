@@ -11,7 +11,8 @@ angular.module('odssPlatimApp.controllers.timeline', [])
                 service.editToken(token, args.row);
             }
         };
-        var timelineWidget = new TimelineWidget($("#timelines")[0], tokenForm);
+        var elm = document.getElementById("timelines");
+        var timelineWidget = new TimelineWidget(elm, tokenForm);
         timelineWidget.draw();
 
         return timelineWidget;

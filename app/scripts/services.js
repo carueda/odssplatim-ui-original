@@ -4,13 +4,18 @@
 
 
 angular.module('odssPlatimApp.services', [])
-    .factory('service', ['$rootScope', '$http', 'platimModel', function($rootScope, $http, platimModel) {
+    .factory('service', ['$rootScope', '$http', 'platimModel', 'status',
+                function($rootScope, $http, platimModel, status) {
+
+        var activities = status.activities;
+        var errors     = status.errors;
 
         /**
          * Start the full refresh of the model (except options)
          * @param fns  Callback functions
          */
         var refresh = function(fns) {
+            status.errors.removeAll();
             getAllPlatforms(fns);
         };
 
@@ -19,12 +24,12 @@ angular.module('odssPlatimApp.services', [])
          * @param fns  Callback functions
          */
         var getAllPlatforms = function(fns) {
-            pstatus("Retrieving platforms...");
+            var actId = activities.add("retrieving platforms");
             var url = odssplatimConfig.rest + "/platforms";
             console.log("GET " + url);
             $http.get(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     //console.log("getAllPlatforms: " + JSON.stringify(res));
 
                     _.each(res, function(elm) {
@@ -47,7 +52,7 @@ angular.module('odssPlatimApp.services', [])
                     getHolidays(fns);
                 })
 
-                .error(httpErrorHandler)
+                .error(httpErrorHandler(actId))
             ;
         };
 
@@ -58,21 +63,22 @@ angular.module('odssPlatimApp.services', [])
         var getHolidays = function(fns) {
             var url = odssplatimConfig.rest + "/periods/holidays";
             console.log("GET " + url);
+            var actId = activities.add('retrieving holidays');
             $http.get(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     platimModel.holidays = res.holidays;
                     fns.gotHolidays(res);
                     refreshTimelines(fns);
                 })
                 .error(function(data, status, headers, config) {
                     if (status == 404) {
-                        success();
+                        activities.remove(actId);
                         fns.gotHolidays();
                         refreshTimelines(fns);
                     }
                     else {
-                        httpErrorHandler(data, status, headers, config)
+                        httpErrorHandler(actId)(data, status, headers, config)
                     }
                 });
         };
@@ -84,9 +90,10 @@ angular.module('odssPlatimApp.services', [])
         var refreshTimelines = function(fns) {
             var url = odssplatimConfig.rest + "/tokens/timelines";
             console.log("GET " + url);
+            var actId = activities.add('retrieving timelines');
             $http.get(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
 
                     platimModel.platform_ids = [];
                     _.each(res, function(elm) {
@@ -109,7 +116,7 @@ angular.module('odssPlatimApp.services', [])
                     putTokens(fns);
                 })
 
-                .error(httpErrorHandler);
+                .error(httpErrorHandler(actId));
         };
 
         /**
@@ -137,13 +144,13 @@ angular.module('odssPlatimApp.services', [])
                 var platform_id   = tml.platform_id;
                 var platform_name = tml.platform_name;
                 //console.log("getting tokens for " + platform_name + " (" +platform_id+ ")");
-                pprogress("getting tokens for " + platform_name);
 
                 var url = odssplatimConfig.rest + "/tokens/timelines/" + platform_id;
                 console.log("GET " + url);
+                var actId = activities.add("getting tokens for " + platform_name);
                 $http.get(url)
                     .success(function(tokens, status, headers, config) {
-                        success();
+                        activities.remove(actId);
                         _.each(tokens, function(token) {
                             token.token_id      = token._id;
                             token.platform_name = platform_name;
@@ -155,10 +162,9 @@ angular.module('odssPlatimApp.services', [])
                         doList(index + 1)
                     })
 
-                    .error(function(data, status, headers, config) {
-                        httpErrorHandler(data, status, headers, config);
+                    .error(httpErrorHandler(actId, function() {
                         listDone(false);
-                    });
+                    }));
             }
 
             function listDone(ok) {
@@ -177,9 +183,10 @@ angular.module('odssPlatimApp.services', [])
         var refreshPeriods = function(fns) {
             var url = odssplatimConfig.rest + "/periods";
             console.log("GET " + url);
+            var actId = activities.add("refreshing periods");
             $http.get(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     platimModel.periods = {};
                     _.each(res, function(per) {
                         platimModel.periods[per._id] = per;
@@ -188,7 +195,7 @@ angular.module('odssPlatimApp.services', [])
                     getDefaultPeriodId(fns);
                 })
 
-                .error(httpErrorHandler);
+                .error(httpErrorHandler(actId));
         };
 
         /**
@@ -198,9 +205,10 @@ angular.module('odssPlatimApp.services', [])
         var getDefaultPeriodId = function(fns) {
             var url = odssplatimConfig.rest + "/periods/default";
             console.log("GET " + url);
+            var actId = activities.add("getting default period");
             $http.get(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     platimModel.selectedPeriodId = res.defaultPeriodId;
                     fns.gotDefaultPeriodId();
                     fns.refreshComplete();
@@ -208,12 +216,12 @@ angular.module('odssPlatimApp.services', [])
 
                 .error(function(data, status, headers, config) {
                     if (status == 404) {
-                        success();
+                        activities.remove(actId);
                         fns.gotDefaultPeriodId();
                         fns.refreshComplete();
                     }
                     else {
-                        httpErrorHandler(data, status, headers, config)
+                        httpErrorHandler(actId)(data, status, headers, config)
                     }
                 });
         };
@@ -222,28 +230,30 @@ angular.module('odssPlatimApp.services', [])
          * Sets the default period.
          */
         var setDefaultPeriodId = function(_id) {
-            var url;
+            var url, actId;
             if (_id === undefined) {
                 url = odssplatimConfig.rest + "/periods/default";
                 console.log("DELETE " + url);
+                actId = activities.add("deleting default period");
                 $http.delete(url)
                     .success(function(res, status, headers, config) {
-                        success();
+                        activities.remove(actId);
                         platimModel.selectedPeriodId = undefined;
                     })
 
-                    .error(httpErrorHandler);
+                    .error(httpErrorHandler(actId));
             }
             else {
                 url = odssplatimConfig.rest + "/periods/default/" + _id;
                 console.log("PUT " + url);
+                actId = activities.add("updating default period");
                 $http.put(url)
                     .success(function(res, status, headers, config) {
-                        success();
+                        activities.remove(actId);
                         platimModel.selectedPeriodId = _id;
                     })
 
-                    .error(httpErrorHandler);
+                    .error(httpErrorHandler(actId));
             }
         };
 
@@ -253,16 +263,17 @@ angular.module('odssPlatimApp.services', [])
         var removePeriod = function(_id) {
             var url = odssplatimConfig.rest + "/periods/" + _id;
             console.log("DELETE " + url);
+            var actId = activities.add("deleting period");
             $http.delete(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     delete platimModel.periods[_id];
                     if (platimModel.selectedPeriodId === _id) {
                         platimModel.selectedPeriodId = undefined;
                     }
                 })
 
-                .error(httpErrorHandler);
+                .error(httpErrorHandler(actId));
         };
 
         /**
@@ -270,7 +281,7 @@ angular.module('odssPlatimApp.services', [])
          */
         var addPeriod = function(newPeriodInfo, successFn) {
             console.log("addPeriod:", newPeriodInfo);
-            pstatus("saving new period '" +newPeriodInfo.name+ "'");
+            var actId = activities.add("saving new period '" +newPeriodInfo.name+ "'");
             var url = odssplatimConfig.rest + "/periods";
 
             console.log("POST " + url, "newPeriodInfo=", newPeriodInfo);
@@ -280,20 +291,20 @@ angular.module('odssPlatimApp.services', [])
                 data:    newPeriodInfo
             })
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     platimModel.periods[res._id] = res;
                     platimModel.selectedPeriodId = res._id;
                     successFn();
                 })
 
-                .error(httpErrorHandler);
+                .error(httpErrorHandler(actId));
         };
 
         /**
          * Adds or updates the given token.
          */
         var saveToken = function(tokenInfo, index, successFn) {
-            var url;
+            var url, actId;
             console.log("saveToken: tokenInfo=" + JSON.stringify(tokenInfo));
 
             var item = {
@@ -307,36 +318,36 @@ angular.module('odssPlatimApp.services', [])
             if (tokenInfo.token_id !== undefined) {
                 // update existing token:
                 console.log("saveToken: updating token_id=" +tokenInfo.token_id, item);
-                pprogress("saving modified token ...");
 
                 url = odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id;
+                actId = activities.add("updating token " +item.state);
                 $http.put(url, item)
                     .success(function(res, status, headers, config) {
-                        success();
+                        activities.remove(actId);
                         successFn(index, tokenInfo);
                         console.log("token updated:", tokenInfo);
                     })
 
-                    .error(httpErrorHandler);
+                    .error(httpErrorHandler(actId));
             }
             else {
                 // add new token
                 console.log("saveToken: posting new token", item);
-                pprogress("saving new token ...");
 
                 url = odssplatimConfig.rest + "/tokens";
+                actId = activities.add("adding token " +item.state);
                 $http({
                     method:  'POST',
                     url:     url,
                     data:    item
                 })
                     .success(function(data, status, headers, config) {
-                        success();
+                        activities.remove(actId);
                         tokenInfo.token_id = data._id;
                         successFn(index, tokenInfo);
                         console.log("token posted:", tokenInfo);
                     })
-                    .error(httpErrorHandler);
+                    .error(httpErrorHandler(actId));
             }
         };
 
@@ -349,24 +360,45 @@ angular.module('odssPlatimApp.services', [])
                 return;
             }
 
-            pprogress("deleting token ...");
             var url = odssplatimConfig.rest + "/tokens/" + tokenInfo.token_id;
             console.log("DELETE " + url);
+            var actId = activities.add("deleting token " +tokenInfo.state);
             $http.delete(url)
                 .success(function(res, status, headers, config) {
-                    success();
+                    activities.remove(actId);
                     successFn(tokenInfo, index);
                 })
-                .error(httpErrorHandler);
+                .error(httpErrorHandler(actId));
         };
 
-        var httpErrorHandler = function(data, status, headers, config) {
-            var reqMsg = config.method + " '" + config.url + "'";
-            console.log("error in request " +reqMsg+ ":",
-                        "data=", data, "status=", status,
-                        "config=", config);
-            perror("[" + status+ "] An error occured in a request to the " +
-                   "back-end service. Try again in a few moments.");
+        /**
+         * Returns a customized error handler for an http request.
+         *
+         * @param actId     Id of activity to be removed from the activities list.
+         * @param fn        callback for any further action on the error;
+         *                  called as fn(data, status, headers, config).
+         * @returns {Function}  handler
+         */
+        var httpErrorHandler = function(actId, fn) {
+            return function(data, status, headers, config) {
+                var reqMsg = config.method + " '" + config.url + "'";
+                console.log("error in request " +reqMsg+ ":",
+                            "data=", data, "status=", status,
+                            "config=", config);
+
+                var error = "An error occured while " + activities.get(actId) + ". " +
+                    "(status=" + status + "). " +
+                    "Try again in a few moments.";
+
+                errors.add(error);
+
+                if (actId !== undefined) {
+                    activities.remove(actId);
+                }
+                if (fn !== undefined) {
+                    fn(data, status, headers, config);
+                }
+            };
         };
 
         return {

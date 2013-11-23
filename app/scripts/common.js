@@ -1,6 +1,6 @@
 function assert(value, desc) {
     if (!value) {
-        perror("Assertion failed: " + desc);
+        console.log("Assertion failed: ", desc);
     }
 }
 
@@ -38,23 +38,6 @@ function pstatus(msg, autohide) {
         $("#status").text(msg).fadeIn(1000);
     }
 }
-
-function pprogress(msg) {
-    pstatus(msg);
-}
-
-function perror(err) {
-    pprogress();
-    $("#error").text(err);
-    if (err !== undefined && err !== "") {
-        console.log(err);
-    }
-}
-
-function success() {
-    $("#error").text("");
-}
-
 
 function tablify(obj, simple) {
     simple = simple === undefined || simple;

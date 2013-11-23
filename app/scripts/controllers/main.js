@@ -2,12 +2,15 @@
 
 angular.module('odssPlatimApp.controllers.main', [])
 
-    .controller('MainCtrl', ['$scope', 'platimModel', 'service', 'timelineWidget',
-    function ($scope, platimModel, service, timelineWidget) {
+    .controller('MainCtrl', ['$scope', 'platimModel', 'service', 'timelineWidget', 'status',
+    function ($scope, platimModel, service, timelineWidget, status) {
 
         $scope.debug = window.location.toString().match(/.*\?debug/)
             ? { collapsed: true, model: platimModel }
             : undefined;
+
+        $scope.activities = status.activities;
+        $scope.errors     = status.errors;
 
         var gotPlatforms = function(platforms) {
             //console.log("gotPlatforms: ", platforms);
@@ -56,10 +59,9 @@ angular.module('odssPlatimApp.controllers.main', [])
          * Triggers the refresh of the model.
          */
         $scope.refresh = function() {
-            perror();
+            status.errors.removeAll();
             $("#logarea").html("");
             console.log("refreshing...");
-            pprogress("refreshing...");
             timelineWidget.reinit();
             service.refresh({
                 gotPlatforms:         gotPlatforms,
@@ -116,8 +118,7 @@ angular.module('odssPlatimApp.controllers.main', [])
                 return res;
             }
 
-            perror();
-            pprogress("saving...");
+            status.errors.removeAll();
 
             var skipped = 0;
             var toBeSaved = [];
@@ -163,8 +164,6 @@ angular.module('odssPlatimApp.controllers.main', [])
             }
             doList(0);
         };
-
-        $(document).tooltip(); // TODO remove jQ stuff
 
         // initial refresh
         $scope.refresh();
