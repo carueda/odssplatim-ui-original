@@ -59,7 +59,6 @@ function TimelineWidget(container, tokenForm) {
     addAddListener();
     addChangeListener();
     addEditListener();
-    addResizeListener();
     addSelectListener();
 
 
@@ -126,15 +125,18 @@ function TimelineWidget(container, tokenForm) {
 
         pushBlockDummy(platform_id);
 
-        $(document).on("click", "#" +platform_id, function() {
-            platformClicked(platform_id);
-        });
+        setTimeout(function() {
+            var elm = angular.element(document.getElementById(platform_id));
+            elm.on("click", function() {
+                platformClicked(platform_id);
+            });
+        },2000);
     };
 
+    var logarea = angular.element(document.getElementById('logarea'));
+
     function platformClicked(platform_id) {
-        //var platform_name = groups[platform_id].tml.platform_name;
-        //console.log("platformClicked= '" + platform_id + "' " + "platform_name = '" + platform_name+ "'");
-        $("#logarea").html(tablify(groups[platform_id].tml));
+        logarea.html(tablify(groups[platform_id].tml));
     }
 
     this.addToken = function(token) {
@@ -290,23 +292,17 @@ function TimelineWidget(container, tokenForm) {
             if (row) {
                 var element = data[row];
 
-                $("#logarea").html(tablify(element));
+                logarea.html(tablify(element));
 
                 console.log("SELECT: row=" + row + ": " + JSON.stringify(element));
                 self.timeline.selectItem(row);
             }
             else {
-                $("#logarea").html("");
+                logarea.html("");
             }
         };
 
         links.events.addListener(self.timeline, 'select', onSelect);
-    }
-
-    function addResizeListener() {
-        $(window).bind('resize', function() {
-            self.timeline.redraw();
-        });
     }
 
     function formattedGroup(platform_id) {

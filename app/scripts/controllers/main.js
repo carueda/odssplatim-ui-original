@@ -68,7 +68,7 @@ angular.module('odssPlatimApp.controllers.main', [])
          */
         $scope.refresh = function() {
             status.errors.removeAll();
-            $("#logarea").html("");
+            angular.element(document.getElementById('logarea')).html("");
             console.log("refreshing...");
             timelineWidget.reinit();
             service.refresh({
