@@ -1,7 +1,8 @@
-node_modules
-bin
-bower_components
-vendor
+node_modules/
+bower_components/
+vendor/
+bin/
+build/
 .DS_Store
 .idea
 .idea_modules
