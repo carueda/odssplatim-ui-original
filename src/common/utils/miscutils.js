@@ -1,8 +1,9 @@
-function assert(value, desc) {
-    if (!value) {
-        console.log("Assertion failed: ", desc);
-    }
-}
+/*
+ * Some misc utilities.
+ * @author Carlos Rueda
+ */
+
+// TODO put these under a base namespace.
 
 function strip(html) {
     var tmp = document.createElement("DIV");
