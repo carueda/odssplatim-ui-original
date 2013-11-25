@@ -83,8 +83,8 @@ module.exports = function(grunt) {
         files: [
           {
             cwd: 'src/app/',
-            src: 'views/**',
-            dest: 'bin/',
+            src: '**/*tpl.html',
+            dest: 'bin',
             expand: true
           }
         ]
@@ -112,7 +112,7 @@ module.exports = function(grunt) {
 
       js: {
         src: [
-          'src/common/links/**/*.js',
+          'src/common/**/*.js',
           'src/app/**/*.js',
           '<%= ngtemplates["odssPlatimApp.templates"].dest %>',
           '!bin/js/odssplatim.js'
