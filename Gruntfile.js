@@ -4,10 +4,18 @@ module.exports = function(grunt) {
  // load required Grunt tasks:
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   var taskConfig = {
     pkg: grunt.file.readJSON('package.json'),
+
+    /**
+     * The directories to delete when `grunt clean` is executed.
+     */
+    clean: [
+      'bin'
+    ],
 
     copy: {
       vendor_bootstrap: {
