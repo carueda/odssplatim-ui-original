@@ -3,27 +3,11 @@ module.exports = function(grunt) {
 
  // load required Grunt tasks:
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-angular-templates');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   var taskConfig = {
     pkg: grunt.file.readJSON('package.json'),
-
-    ngtemplates: {
-      "odssPlatimApp.templates": {
-        cwd: 'app',
-        src: "views/**/*.html",
-        dest: "bin/js/templates.js",
-        options: {
-            // bootstrap as a workaround to ngtemplates bug: add missing [] argument:
-            bootstrap: function(module, script) {
-                return "angular.module('" +module+ "', []).run(['$templateCache', " +
-                    "function($templateCache) {" + script+ "}]);";
-            }
-        }
-      }
-    },
 
     copy: {
       vendor_bootstrap: {
@@ -98,7 +82,7 @@ module.exports = function(grunt) {
           'vendor/underscore/underscore-min.js',
           'vendor/angular/angular.js',
           'vendor/angular-sanitize/angular-sanitize.js',
-          'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+          'vendor/angular-bootstrap/ui-bootstrap-tpls.js'
         ],
         dest: 'bin/js/odssplatim_vendor.js'
       },
@@ -114,7 +98,6 @@ module.exports = function(grunt) {
         src: [
           'src/common/**/*.js',
           'src/app/**/*.js',
-          '<%= ngtemplates["odssPlatimApp.templates"].dest %>',
           '!bin/js/odssplatim.js'
         ],
         dest: 'bin/js/odssplatim.js'
