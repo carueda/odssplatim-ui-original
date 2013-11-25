@@ -60,7 +60,7 @@ module.exports = function(grunt) {
       common_links: {
         files: [
           {
-            cwd: 'app/scripts/links/',
+            cwd: 'src/app/links/',
             src: [ 'img/**' ],
             dest: 'bin/css',
             expand: true
@@ -71,9 +71,9 @@ module.exports = function(grunt) {
       platim_img: {
         files: [
           {
-            cwd: 'src/assets/',
-            src: 'img/**',
-            dest: 'bin/',
+            cwd: 'src/img',
+            src: '**',
+            dest: 'bin/img',
             expand: true
           }
         ]
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
       platim_views: {  // in case of not using the templates file
         files: [
           {
-            cwd: 'app/',
+            cwd: 'src/app/',
             src: 'views/**',
             dest: 'bin/',
             expand: true
@@ -112,8 +112,8 @@ module.exports = function(grunt) {
 
       js: {
         src: [
-          'app/scripts/links/**/*.js',
-          'app/scripts/**/*.js',
+          'src/app/links/**/*.js',
+          'src/app/**/*.js',
           '<%= ngtemplates["odssPlatimApp.templates"].dest %>',
           '!bin/js/odssplatim.js'
         ],
@@ -121,8 +121,8 @@ module.exports = function(grunt) {
       },
       css: {
         src: [
-          'app/scripts/links/timeline.css',
-          'app/styles/**/*.css'
+          'src/app/links/timeline.css',
+          'src/css/**/*.css'
         ],
         dest: 'bin/css/odssplatim.css'
       }
