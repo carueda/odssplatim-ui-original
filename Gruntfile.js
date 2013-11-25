@@ -72,17 +72,26 @@ module.exports = function(grunt) {
             expand: true
           }
         ]
+      },
+
+      platim_index: {
+        files: [
+          {
+            src: 'src/app/index.min.html',
+            dest: 'bin/index.html'
+          }
+        ]
       }
     },
 
     concat: {
       vendor_js: {
         src: [
-          'vendor/moment/moment.js',
+          'vendor/moment/min/moment.min.js',
           'vendor/underscore/underscore-min.js',
-          'vendor/angular/angular.js',
-          'vendor/angular-sanitize/angular-sanitize.js',
-          'vendor/angular-bootstrap/ui-bootstrap-tpls.js'
+          'vendor/angular/angular.min.js',
+          'vendor/angular-sanitize/angular-sanitize.min.js',
+          'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js'
         ],
         dest: 'bin/js/odssplatim_vendor.js'
       },
