@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+/*
+ * From https://github.com/angular/angular-seed/blob/master/scripts/web-server.js.
+ *
+ * Only used for local development.
+ */
+
 var util = require('util'),
     http = require('http'),
     fs = require('fs'),
