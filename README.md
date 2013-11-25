@@ -18,6 +18,9 @@ Then, install the dependencies:
 ```shell
 $ bower install
 ```
+This installs the dependencies under `vendor/`.
+
+Then you can run the application in development mode or in minified form.
 
 ## configure and run in development mode ##
 
@@ -35,11 +38,12 @@ Then open http://localhost:8000/src/app/index.html in your browser.
 
 This is done via [Grunt](http://gruntjs.com/).
 
-First do the installation of the required tasks:
+First do the installation of Grunt and the required tasks:
 
 ```shell
 $ npm install
 ```
+This installs the dependencies under `node_modules/`.
 
 Then, run:
 ```shell
