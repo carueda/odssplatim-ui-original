@@ -71,7 +71,7 @@ module.exports = function(grunt) {
       platim_img: {
         files: [
           {
-            cwd: 'app/',
+            cwd: 'src/assets/',
             src: 'img/**',
             dest: 'bin/',
             expand: true
