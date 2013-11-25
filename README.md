@@ -30,35 +30,48 @@ This installs the dependencies under `vendor/`.
 $ npm install
 ```
 This installs the dependencies under `node_modules/` and also generates
-`src/app/templates.js` with all the templates in the web application so they
-are not only fetched in a single request, but the caching also facilitates
+`src/app/templates.js` with all the templates in the module web application
+so they are not only fetched in a single request, but the caching also facilitates
 the deployment of this module along with the main ODSS application without
 having to adjust any paths for the templates.
 
 ## Configure the module ##
 
-Edit `src/app/config.js` to indicate the platform time editor REST endpoint
-URL.
+If needed, edit `src/app/config.js` in this module to indicate the platform
+time editor REST endpoint URL. The default value, "/odss/platim", should be
+OK for the ODSS application (see `src/server/AppServer.js` under root directory).
 
-Then you can run the application in development mode or in minified form.
+## Setting everything up ##
 
-## Run in development mode ##
+To complete the preparations to enable the module for ODSS, execute:
+```shell
+$ grunt
+```
+In particular, this generates `bin/` with a self-contained platform timeline
+editor application, so it will include all supporting resources.
 
-- open `src/app/index.html` in your browser.
+
+## Running ##
+
+At this point the module should be fully enabled in the main ODSS application.
+In concrete, the main index file, `src/webapp/odss/index.html`, includes the
+needed resources, in this case by pointing to concatenated/minified files for
+these resources. For a version pointing to all resources individually,
+see `src/webapp/odss/index-odssplatim.html`.
+
+## Local testing ##
+
+The module itself can be launched outside of the main ODSS application as
+follows:
+
+- Mainly for development mode, open `src/app/index.html` in your browser.
 For convenience, a local http server can be run as follows:
 ```shell
 $ node scripts/web-server.js
 ```
 Then open http://localhost:8000/src/app/index.html in your browser.
 
-## Run in minified form ##
-
-Execute:
-```shell
-$ grunt
-```
-This generates `bin/` with a self-contained platform timeline editor
-application. You can then open http://localhost:8000/bin/index.html in your
+- For the minified form, open http://localhost:8000/bin/index.html in your
 browser.
 
 
