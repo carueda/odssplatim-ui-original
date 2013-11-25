@@ -29,7 +29,7 @@ For convenience, a local http server can be run as follows:
 ```shell
 $ node scripts/web-server.js
 ```
-Then open [http://localhost:8000/src/app/index.html] in your browser.
+Then open http://localhost:8000/src/app/index.html in your browser.
 
 ## compile and run in minified form ##
 
@@ -46,7 +46,7 @@ Then, run:
 $ grunt
 ```
 This generates `bin/` with a self-contained platform timeline editor
-application. You can open http://localhost:8000/bin/index.html in your
+application. You can then open http://localhost:8000/bin/index.html in your
 browser.
 
 
