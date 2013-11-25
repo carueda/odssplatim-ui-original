@@ -1,7 +1,12 @@
 odssplatim-ui
 =============
 
-This is a prototype UI for the platform timeline editor in the ODSS.
+This is the platform timeline editor UI module for ODSS.
+
+The platform timeline editor is intended to allow users to schedule platform
+assets in a graphical way while providing a unified mechanism to maintain and
+share this information with features including options to enter typical
+platform schedules, navigation with zoom in/out, and versioning.
 
 
 ## install dependencies ##
