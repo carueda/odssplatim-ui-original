@@ -7,14 +7,14 @@
  * NOTE: not completely implemented. For example, there is no direct way for the
  * user to reset to the saved period info after applying a modification in the UI.
  */
-angular.module('odssPlatimApp.controllers.period', [])
+angular.module('odssPlatimApp.period', [])
 
     .controller('PeriodCtrl', ['$scope', '$modal', '$timeout', 'platimModel', 'service',
         function ($scope, $modal, $timeout, platimModel, service) {
 
             $scope.open = function () {
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/period.tpl.html',
+                    templateUrl: 'period/period.tpl.html',
                     controller:  'PeriodInstanceCtrl',
                     backdrop:    'static'
                 });

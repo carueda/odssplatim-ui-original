@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('odssPlatimApp.controllers.util', [])
+angular.module('odssPlatimApp.util', [])
 
     .controller('UtilCtrl', ['$scope', '$modal',
         function ($scope, $modal) {
@@ -14,7 +14,7 @@ angular.module('odssPlatimApp.controllers.util', [])
             $scope.open = function () {
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/confirm.tpl.html',
+                    templateUrl: 'util/confirm.tpl.html',
                     controller: 'ConfirmInstanceCtrl',
                     resolve: {
                         info: function () {

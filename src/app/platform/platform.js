@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('odssPlatimApp.controllers.platform', [])
+angular.module('odssPlatimApp.platform', [])
 
     .controller('PlatformCtrl', ['$scope', '$modal', 'platimModel', 'service',
         function ($scope, $modal, platimModel, service) {
@@ -11,7 +11,7 @@ angular.module('odssPlatimApp.controllers.platform', [])
                 console.log("$scope.platformOptions:", $scope.platformOptions);
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/platform.tpl.html',
+                    templateUrl: 'platform/platform.tpl.html',
                     controller: 'PlatformInstanceCtrl',
                     resolve: {
                         platformOptions: function () {

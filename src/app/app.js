@@ -5,11 +5,10 @@ angular.module('odssPlatimApp', [
     'ngSanitize',
     //'odssPlatimApp.templates',
     'odssPlatimApp.model',
-    'odssPlatimApp.controllers.platform',
-    'odssPlatimApp.controllers.timeline',
-    'odssPlatimApp.controllers.period',
-    'odssPlatimApp.controllers.util',
+    'odssPlatimApp.platform',
+    'odssPlatimApp.token',
+    'odssPlatimApp.period',
+    'odssPlatimApp.util',
     'odssPlatimApp.services',
-    'odssPlatimApp.controllers.main',
-    'odssPlatimApp.directives'
+    'odssPlatimApp.main'
 ]);

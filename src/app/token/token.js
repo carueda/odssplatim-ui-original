@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('odssPlatimApp.controllers.timeline', [])
+angular.module('odssPlatimApp.token', [])
 
     .factory('timelineWidget', ['service', function(service) {
         var tokenForm = {
@@ -37,7 +37,7 @@ angular.module('odssPlatimApp.controllers.timeline', [])
             $scope.open = function () {
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'views/token.tpl.html',
+                    templateUrl: 'token/token.tpl.html',
                     controller:  'TokenInstanceCtrl',
                     backdrop:    'static',
                     resolve: {
