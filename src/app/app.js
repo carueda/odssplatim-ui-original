@@ -3,7 +3,6 @@
 angular.module('odssPlatimApp', [
     'ui.bootstrap',
     'ngSanitize',
-    //'odssPlatimApp.templates',
     'odssPlatimApp.model',
     'odssPlatimApp.platform',
     'odssPlatimApp.token',
