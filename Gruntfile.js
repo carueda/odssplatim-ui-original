@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       vendor_bootstrap: {
         files: [
           {
-            cwd: 'app/vendor/bootstrap/img',
+            cwd: 'vendor/bootstrap/img',
             src: [ '**' ],
             dest: 'bin/img',
             expand: true
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
       vendor_font_awesome: {
         files: [
           {
-            cwd: 'app/vendor/font-awesome/font',
+            cwd: 'vendor/font-awesome/font',
             src: [ '**' ],
             dest: 'bin/font',
             expand: true
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
       vendor_underscore: {
         files: [
           {
-            cwd: 'app/vendor/underscore',
+            cwd: 'vendor/underscore',
             src: [ '*.map' ],
             dest: 'bin/js',
             expand: true
@@ -94,18 +94,18 @@ module.exports = function(grunt) {
     concat: {
       vendor_js: {
         src: [
-          'app/vendor/moment/moment.js',
-          'app/vendor/underscore/underscore-min.js',
-          'app/vendor/angular/angular.js',
-          'app/vendor/angular-sanitize/angular-sanitize.js',
-          'app/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+          'vendor/moment/moment.js',
+          'vendor/underscore/underscore-min.js',
+          'vendor/angular/angular.js',
+          'vendor/angular-sanitize/angular-sanitize.js',
+          'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
         ],
         dest: 'bin/js/odssplatim_vendor.js'
       },
       vendor_css: {
         src: [
-          'app/vendor/bootstrap-css/css/bootstrap.min.css',
-          'app/vendor/font-awesome/css/font-awesome.min.css'
+          'vendor/bootstrap-css/css/bootstrap.min.css',
+          'vendor/font-awesome/css/font-awesome.min.css'
         ],
         dest: 'bin/css/odssplatim_vendor.css'
       },
