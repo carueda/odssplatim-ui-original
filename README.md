@@ -3,15 +3,56 @@ odssplatim-ui
 
 This is a prototype UI for the platform timeline editor in the ODSS.
 
-Preliminary; to be integrated into the main ODSS codebase.
 
-## dependency: ##
+## install dependencies ##
 
-- [odssplatim-rest](https://github.com/carueda/odssplatim-rest), or other
-service with similar REST interface, running somewhere.
+The dependencies (AngularJS, MomentJS, etc,) are not kept under version
+control but are to be installed, which is done via (Bower)[http://bower.io/].
+So, first install Bower:
 
-## configure & run ##
+```shell
+$ npm install -g bower
+```
 
-- edit config.js to indicate the odssplatim-rest endpoint URL.
+Then, install the dependencies:
+```shell
+$ bower install
+```
 
-- open webapp/index.html in your browser
+## configure and run in development mode ##
+
+- edit `src/app/config.js` to indicate the platform time editor REST endpoint
+URL.
+
+- open `src/app/index.html` in your browser.
+For convenience, a local http server can be run as follows:
+```shell
+$ node scripts/web-server.js
+```
+Then open http://localhost:8000/src/app/index.html in your browser.
+
+## compile and run in minified form ##
+
+This is done via (Grunt)[http://gruntjs.com/].
+
+First do the installation of the required tasks:
+
+```shell
+$ npm install
+```
+
+Then, run:
+```shell
+$ grunt
+```
+This generates `bin/` with a self-contained platform timeline editor
+application. You can open http://localhost:8000/bin/index.html in your
+browser.
+
+
+## History ##
+
+This project first started as a clone of https://github.com/angular/angular-seed
+but then it was morphed into a structure more closely aligned with
+https://github.com/ngbp/ng-boilerplate/.
+
